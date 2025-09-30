@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
     <style>
         body {
-            background-color: black;
-            color: white;
+            background: linear-gradient(135deg, #f0f4f8, #e6ebf1);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            min-height: 100vh;
         }
 
         /* Texte en dégradé */
@@ -23,59 +25,62 @@
             display: inline-block;
         }
 
-        /* Navbar et liens */
-        .navbar,
-        .hero.is-primary {
-            background-color: black !important;
+        /* Navbar flottante boutons */
+        .navbar-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding: 1rem;
         }
 
-        .navbar-item {
-            color: white !important;
+        .navbar-button {
+            border-radius: 24px;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
         }
 
-        .navbar-item:hover {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            color: white !important;
+        /* Bouton actif */
+        .navbar-button.active {
+            background: linear-gradient(135deg, #ff6a00, #ffd500);
+        }
+
+        .navbar-button:hover {
+            background: linear-gradient(135deg, #ff4b2b, #ff6a00);
+        }
+
+        .hero-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1.title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
 
 <body>
-    <section class="hero is-primary is-fullheight">
+    <!-- Navbar boutons flottants -->
+    <div class="navbar-buttons">
+        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
 
-        <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="navbar-button">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}">Login</a>
+            <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}">Sign Up</a>
+        {% endif %}
+    </div>
 
-                    <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
-                            <a href="{{ url_for('main.index') }}" class="navbar-item gradient-text">
-                                Home
-                            </a>
-                            {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('main.profile') }}" class="navbar-item gradient-text">
-                                Profile
-                            </a>
-                            {% endif %}
-                            {% if not current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.login') }}" class="navbar-item gradient-text">
-                                Login
-                            </a>
-                            <a href="{{ url_for('auth.signup') }}" class="navbar-item gradient-text">
-                                Sign Up
-                            </a>
-                            {% endif %}
-                            {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.logout') }}" class="navbar-item gradient-text">
-                                Logout
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-
+    <section class="hero is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                {% block content %}

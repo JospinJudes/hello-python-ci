@@ -3,10 +3,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Flask Login Example
-</h1>
-<h2 class="subtitle">
-  Easy authentication and authorization in Flask.
-</h2>
+
+<h1 class="title gradient-text">Welcome to the site!</h1>
+
+{% if not current_user.is_authenticated %}
+<div style="margin-top: 2rem;">
+    <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+        You are not logged in. Create an account or log in to enjoy all features!
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('auth.signup') }}" class="navbar-button" style="border-radius: 24px; padding: 0.8rem 1.5rem;">Sign Up</a>
+        <a href="{{ url_for('auth.login') }}" class="navbar-button" style="border-radius: 24px; padding: 0.8rem 1.5rem;">Login</a>
+    </div>
+</div>
+{% else %}
+<p style="margin-top: 2rem; font-size: 1.2rem;">
+    Hello {{ current_user.name }}! You are logged in.
+</p>
+{% endif %}
+
 {% endblock %}
