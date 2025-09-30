@@ -9,6 +9,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Auth Example</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+
+        /* Texte en dégradé */
+        .gradient-text {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* Navbar et liens */
+        .navbar,
+        .hero.is-primary {
+            background-color: black !important;
+        }
+
+        .navbar-item {
+            color: white !important;
+        }
+
+        .navbar-item:hover {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,24 +49,24 @@
 
                     <div id="navbarMenuHeroA" class="navbar-menu">
                         <div class="navbar-end">
-                            <a href="{{ url_for('main.index') }}" class="navbar-item">
+                            <a href="{{ url_for('main.index') }}" class="navbar-item gradient-text">
                                 Home
                             </a>
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
+                            <a href="{{ url_for('main.profile') }}" class="navbar-item gradient-text">
                                 Profile
                             </a>
                             {% endif %}
                             {% if not current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                            <a href="{{ url_for('auth.login') }}" class="navbar-item gradient-text">
                                 Login
                             </a>
-                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                            <a href="{{ url_for('auth.signup') }}" class="navbar-item gradient-text">
                                 Sign Up
                             </a>
                             {% endif %}
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+                            <a href="{{ url_for('auth.logout') }}" class="navbar-item gradient-text">
                                 Logout
                             </a>
                             {% endif %}
@@ -50,6 +79,7 @@
         <div class="hero-body">
             <div class="container has-text-centered">
                {% block content %}
+               <h1 class="title gradient-text">Bienvenue !</h1>
                {% endblock %}
             </div>
         </div>
