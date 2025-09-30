@@ -1,0 +1,24 @@
+<!-- templates/tweets.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tweets récents</title>
+</head>
+<body>
+    <h1>Tweets récents</h1>
+    <ul>
+        {% for tweet in tweets %}
+            <li>
+                <strong>{{ tweet.user.username }}</strong>: {{ tweet.content }}
+                <em>({{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }})</em>
+            </li>
+        {% else %}
+            <li>Aucun tweet pour le moment.</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('main.post_tweet') }}">Tweeter</a>
+    <br>
+    <a href="{{ url_for('main.profile') }}">Retour au profil</a>
+</body>
+</html>
