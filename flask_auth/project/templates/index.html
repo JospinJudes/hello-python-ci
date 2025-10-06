@@ -1,5 +1,3 @@
-<!-- templates/index.html -->
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -7,7 +5,7 @@
 <h1 class="title gradient-text">Welcome to Tw'INSA!</h1>
 
 {% if not current_user.is_authenticated %}
-<div style="margin-top: 2rem;">
+<div style="margin-top: 1.5rem;">
     <p style="font-size: 1.2rem; margin-bottom: 1rem;">
         You are not logged in. Create an account or log in to enjoy all features!
     </p>
@@ -18,7 +16,7 @@
     </div>
 </div>
 {% else %}
-<p style="margin-top: 2rem; font-size: 1.2rem;">
+<p style="margin-top: 1.5rem; font-size: 1.2rem;">
     Hello {{ current_user.name }}! You are logged in.
 </p>
 {% endif %}

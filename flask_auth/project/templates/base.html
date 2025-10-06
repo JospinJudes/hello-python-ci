@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
     <style>
         body {
-            background: linear-gradient(135deg, #ffffff, #f7f7f7); /* Fond plus blanc */
+            /* Fond blanc avec un léger dégradé très subtil */
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #333;
             min-height: 100vh;
@@ -24,13 +25,6 @@
         }
 
         /* Navbar flottante boutons */
-        .navbar-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-            padding: 1rem;
-        }
-
         .navbar-button {
             border-radius: 24px;
             font-weight: 500;
@@ -40,6 +34,7 @@
             transition: 0.3s;
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: white;
+            text-decoration: none;
         }
 
         /* Bouton actif */
@@ -54,7 +49,8 @@
         .hero-body {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Alignement en haut au lieu du centre */
+            padding-top: 2rem; /* Décalage pour ne pas coller aux boutons */
         }
 
         h1.title {
@@ -65,25 +61,33 @@
 </head>
 
 <body>
-    <!-- Navbar boutons flottants -->
-    <div class="navbar-buttons">
-        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
+    <!-- Navbar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; flex-wrap: wrap;">
+        <!-- Left: Home & Profile -->
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
+            {% endif %}
+        </div>
 
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
-            <a href="{{ url_for('auth.logout') }}" class="navbar-button">Logout</a>
-        {% else %}
-            <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}">Login</a>
-            <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}">Sign Up</a>
-        {% endif %}
+        <!-- Right: Login / Logout / Signup -->
+        <div style="display: flex; gap: 0.5rem;">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.logout') }}" class="navbar-button">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}">Login</a>
+                <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}">Sign Up</a>
+            {% endif %}
+        </div>
     </div>
 
     <section class="hero is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
-               {% block content %}
-               <h1 class="title gradient-text">Bienvenue !</h1>
-               {% endblock %}
+                {% block content %}
+                <h1 class="title gradient-text">Bienvenue !</h1>
+                {% endblock %}
             </div>
         </div>
     </section>
