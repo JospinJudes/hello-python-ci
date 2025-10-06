@@ -3,28 +3,46 @@
 {% block content %}
 <h1 class="title gradient-text">Post a Tweet</h1>
 
-<div class="container" style="max-width: 500px; margin: 0 auto; padding: 2rem; background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+<div class="container"
+     style="max-width: 500px; margin: 0 auto; padding: 2rem; background: #fff;
+            border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+
     <form method="POST">
         {{ form.hidden_tag() }}
+
         <div class="field">
             {{ form.content.label(class="label") }}
             <div class="control">
-                {{ form.content(class="textarea", rows=4) }}
+                {{ form.content(class="textarea", rows=4, style="border-radius:10px; border:1px solid #ddd; padding:0.75rem; font-size:1rem;") }}
             </div>
         </div>
-        <div class="field has-text-centered">
-            <!-- Utiliser un vrai bouton pour centrer le texte -->
-            <button type="submit" class="button navbar-button" style="display: inline-flex; align-items: center; justify-content: center; text-align: center; padding: 0.75rem 2rem;">
-                Post !
-            </button>
+
+        <!-- Boutons côte à côte, bien alignés -->
+        <div class="field" style="margin-top: 1.8rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+
+                <!-- Bouton Return -->
+                <a href="{{ url_for('main.profile') }}" class="navbar-button"
+                   style="flex: 1; text-align: center; font-size: 1rem; font-weight: 500;
+                          padding: 0.7rem 1.2rem; border-radius: 25px;
+                          background: linear-gradient(135deg, #ff6a00, #ffd500);
+                          color: white; text-decoration: none; box-shadow: 0 3px 8px rgba(255, 165, 0, 0.3);
+                          transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    Return
+                </a>
+
+                <!-- Bouton Post -->
+                <button type="submit" class="navbar-button"
+                    style="flex: 1; font-size: 1rem; font-weight: 500;
+                           padding: 0.7rem 1.2rem; border-radius: 25px;
+                           background: linear-gradient(135deg, #ff416c, #ff4b2b);
+                           color: white; border: none; cursor: pointer;
+                           box-shadow: 0 3px 8px rgba(255, 75, 43, 0.3);
+                           transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    Post
+                </button>
+            </div>
         </div>
     </form>
-
-    <div style="text-align: center; margin-top: 1rem;">
-        <a href="{{ url_for('main.profile') }}" class="navbar-button"
-           style="display: inline-flex; align-items: center; justify-content: center; text-align: center; padding: 0.75rem 2rem;">
-            Back to Profile
-        </a>
-    </div>
 </div>
 {% endblock %}
