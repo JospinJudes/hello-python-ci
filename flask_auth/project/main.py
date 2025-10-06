@@ -1,11 +1,10 @@
 # main.py
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from .models import Tweet
 from . import db
 from .forms import TweetForm
-
 
 main = Blueprint('main', __name__)
 
@@ -16,18 +15,19 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.name)
+    # récupère les tweets de l'utilisateur connecté, triés par date décroissante
+    tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
+    return render_template('profile.html', name=current_user.name, tweets=tweets)
 
 #####AJOUT POST
 @main.route('/tweet', methods=['GET', 'POST'])
 @login_required
 def tweet():
-    if request.method == 'POST':
-        content = request.form.get('content')
-        if content:
-            new_tweet = Tweet(content=content, user=current_user)
-            db.session.add(new_tweet)
-            db.session.commit()
-            flash('Tweet posted!')
-            return redirect(url_for('main.profile'))
-    return render_template('tweet.html', form=TweetForm())
+    form = TweetForm()
+    if form.validate_on_submit():
+        new_tweet = Tweet(content=form.content.data, user=current_user)
+        db.session.add(new_tweet)
+        db.session.commit()
+        flash('Tweet posted!')
+        return redirect(url_for('main.profile'))
+    return render_template('tweet.html', form=form)

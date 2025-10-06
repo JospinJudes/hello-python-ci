@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title gradient-text">
+<h1 class="title gradient-text" style="margin-bottom: 2rem;">
   Welcome, {{ name }}!
 </h1>
 
-<!-- Centered Modern Red-Orange Post Tweet Button -->
+<!-- Centered Post Tweet Button -->
 <div class="has-text-centered" style="margin-bottom: 2rem;">
-    <a href="{{ url_for('main.tweet') }}" class="navbar-button" style="display: inline-flex; align-items: center; justify-content: center; text-align: center; padding: 0.75rem 2rem;">
-        Post a Tweet
+    <a href="{{ url_for('main.tweet') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+        Post
     </a>
 </div>
 
@@ -16,18 +19,20 @@
 
 <!-- Recent tweets -->
 {% if tweets %}
-<h2 class="title is-4">Recent Tweets</h2>
-<ul>
+<div class="tweets-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
     {% for tweet in tweets %}
-        <li class="box">
-            <strong>{{ tweet.user.username }}</strong>: {{ tweet.content }}
-            <br>
-            <small>{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
-        </li>
+    <div style="background: #fff; padding: 1.5rem 2rem; border-radius: 18px; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 1200px; width: 95%; margin: 0 auto; text-align: left;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+            <small style="color: gray; font-size: 0.85rem; margin-left: 1rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+        <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+    </div>
     {% endfor %}
-</ul>
+</div>
 {% else %}
-<p>No tweets yet.</p>
+<p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
 {% endif %}
 
 {% endblock %}
