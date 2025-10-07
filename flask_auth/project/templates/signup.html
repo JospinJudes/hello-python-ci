@@ -18,7 +18,7 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger" 
-                 style="border-radius: 18px; background: rgba(255, 0, 0, 0.673);">
+                 style="border-radius: 18px; background: rgba(64, 255, 0, 0.673);">
                 {{ messages[0] }}. 
                 Go to <a href="{{ url_for('auth.login') }}" class="gradient-text">login page</a>.
             </div>
