@@ -31,3 +31,23 @@ def tweet():
         flash('Tweet posted!')
         return redirect(url_for('main.profile'))
     return render_template('tweet.html', form=form)
+
+### DELETE TWEET
+@main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
+@login_required
+def delete_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id) #si le tweet n'existe pas on renvoit directement l'utilisateur vers une "Page not found"
+    
+    #verifier que le tweet appartient à l'utilisateur
+    if tweet.user_id != current_user.id:
+        flash("You cannot delete this tweet.")
+        return redirect(url_for('main.profile'))
+    try:
+        db.session.delete(tweet)
+        db.session.commit()
+        flash("Tweet supprimé avec succès !")
+    except Exception:
+        db.session.rollback()
+        flash("Une erreur est survenue lors de la suppression.")
+        
+    return redirect(url_for('main.profile'))
