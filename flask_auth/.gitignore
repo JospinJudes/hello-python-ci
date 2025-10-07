@@ -1,1 +1,10 @@
 .venv/
+# Ignorer tous les fichiers compilés Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Ignorer la base de données SQLite locale
+*.sqlite
+*.sqlite3
+*.db
