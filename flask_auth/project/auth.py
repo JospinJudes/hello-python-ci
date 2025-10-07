@@ -18,9 +18,19 @@ def login_post():
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
 
-    user = User.query.filter_by(email=email).first()
+    # check if required fields are missing
+    if not email or not password:
+        flash('Please complete all fields before proceeding.')
+        return redirect(url_for('auth.login')) # reload the page
 
+    user = User.query.filter_by(email=email).first()
+    
     # check if user actually exists
+    if not user:
+        flash('No account found with this email address.')
+        return redirect(url_for('auth.login')) # reload the page
+
+    
     # take the user supplied password, hash it, and compare it to the hashed password in database
     if not user or not check_password_hash(user.password, password): 
         flash('Please check your login details and try again.')
