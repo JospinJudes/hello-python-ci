@@ -25,11 +25,18 @@ def profile():
 def tweet():
     form = TweetForm()
     if form.validate_on_submit():
-        new_tweet = Tweet(content=form.content.data, user=current_user)
-        db.session.add(new_tweet)
-        db.session.commit()
-        flash('Tweet posted!')
-        return redirect(url_for('main.profile'))
+        try:
+            new_tweet = Tweet(content=form.content.data, user=current_user)
+            db.session.add(new_tweet)
+            db.session.commit()
+            flash('Tweet posted!')
+            return redirect(url_for('main.profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred during publication. Please try again.")
+    else:
+        if form.content.errors:
+            flash("Your tweet cannot exceed 280 characters.")
     return render_template('tweet.html', form=form)
 
 ### DELETE TWEET
@@ -45,9 +52,9 @@ def delete_tweet(tweet_id):
     try:
         db.session.delete(tweet)
         db.session.commit()
-        flash("Tweet supprimé avec succès !")
+        #flash("Tweet supprimé avec succès !")
     except Exception:
         db.session.rollback()
-        flash("Une erreur est survenue lors de la suppression.")
+        flash("An error occurred during deletion.")
         
     return redirect(url_for('main.profile'))

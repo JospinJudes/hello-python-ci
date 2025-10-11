@@ -46,16 +46,12 @@
     </form>
 </div>
 
-<!--Delete tweet-->
-{% for tweet in tweets %}
-<div class="tweet">
-    <p>{{ tweet.content }}</p>
-    {% if tweet.user_id == current_user.id %}
-        <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce tweet ?');">
-            <button type="submit" class="delete-btn">Supprimer</button>
-        </form>
-    {% endif %}
-</div>
-{% endfor %}
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger" style="border-radius: 18px; background: rgba(255, 37, 37, 0.738);">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+{% endwith %}
 
 {% endblock %}
