@@ -37,7 +37,7 @@
         {% for tweet in tweets %}
             <div class="tweet-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                    <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+                    <strong style="font-size: 1.05rem;">@{{ tweet.user.name }}</strong> <!-- <-- ici ajouté @ -->
                     <small style="color: gray; font-size: 0.85rem;">
                         {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
                     </small>

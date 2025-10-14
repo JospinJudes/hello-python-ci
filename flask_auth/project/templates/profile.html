@@ -24,7 +24,7 @@
         {{ user.bio or "This user hasn’t written a bio yet." }}
     </p>
 
-    
+
     <!-- Compteurs Following / Follower -->
 <div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
     <div>
@@ -52,7 +52,7 @@
         {% for tweet in tweets %}
             <div class="tweet-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                    <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+                    <strong style="font-size: 1.05rem;">@{{ tweet.user.name }}</strong> <!-- <-- ici ajouté @ -->
                     <small style="color: gray; font-size: 0.85rem;">
                         {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
                     </small>
