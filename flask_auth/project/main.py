@@ -31,3 +31,12 @@ def tweet():
         flash('Tweet posted!')
         return redirect(url_for('main.profile'))
     return render_template('tweet.html', form=form)
+
+##ordre chrono
+@main.route('/timeline')
+@login_required
+def timeline():
+    # Tweets du plus récent au plus ancien
+    tweets = Tweet.query.order_by(Tweet.timestamp.desc()).all()
+    return render_template('tweets.html', tweets=tweets, sort='chrono')
+
