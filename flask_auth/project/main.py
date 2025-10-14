@@ -42,7 +42,7 @@ def edit_bio():
 
     # Limite de caractères
     if len(new_bio) > 300:
-        flash("Bio is too long (max 300 characters).")
+        flash("Bio is too long (max 300 characters)", category='bio')
     else:
         current_user.bio = new_bio
         db.session.commit()
