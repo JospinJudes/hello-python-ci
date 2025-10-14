@@ -39,6 +39,7 @@ def tweet():
             flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
 
+
 ### DELETE TWEET
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
 @login_required
@@ -58,3 +59,17 @@ def delete_tweet(tweet_id):
         flash("An error occurred during deletion.")
         
     return redirect(url_for('main.profile'))
+
+##ordre chrono
+@main.route('/timeline')
+@login_required
+def timeline():
+    # ids des comptes que je suis + moi-même
+    following_ids = [u.id for u in current_user.following] + [current_user.id]
+    # tweets filtrés + triés du plus récent au plus ancien
+    tweets = (Tweet.query
+              .filter(Tweet.user_id.in_(following_ids))
+              .order_by(Tweet.timestamp.desc())
+              .all())
+    return render_template('tweets.html', tweets=tweets, sort='chrono')
+
