@@ -46,6 +46,6 @@ def edit_bio():
     else:
         current_user.bio = new_bio
         db.session.commit()
-        flash("Your bio has been updated!")
+        flash("Your bio has been updated!", category="bio")
 
     return redirect(url_for('main.profile'))
