@@ -1,0 +1,14 @@
+# pour que le projet soit un package python pour les tests
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flask_auth"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = ["Flask", "Flask-SQLAlchemy", "Flask-Login"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flask_auth*"]

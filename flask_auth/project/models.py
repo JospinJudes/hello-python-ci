@@ -19,3 +19,28 @@ class Tweet(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='tweets')
+
+from flask_auth.project.models import User
+
+def test_signup_duplicate_email_is_rejected_without_creating_new_user(app, client):
+    # 1) Création initiale
+    client.post("/signup", data={
+        "email": "bob@example.com",
+        "name": "Bob",
+        "password": "Pwd123!"
+    }, follow_redirects=True)
+
+    # 2) Nouvelle tentative avec le même email
+    resp = client.post("/signup", data={
+        "email": "bob@example.com",
+        "name": "Other Bob",
+        "password": "Pwd456!"
+    }, follow_redirects=True)
+
+    assert resp.status_code == 200
+    # On vérifie que la page d'inscription est renvoyée (échec)
+    assert b"<!-- templates/signup.html -->" in resp.data or b"<form" in resp.data
+
+    # Invariant BDD : un seul utilisateur avec cet email
+    with app.app_context():
+        assert User.query.filter_by(email="bob@example.com").count() == 1

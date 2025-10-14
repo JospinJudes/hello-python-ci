@@ -26,10 +26,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -e .
 
       # Step 4: Run tests
       - name: Run tests
-        run: pytest
+        run: pytest -q --maxfail=1 --disable-warnings --tb=short
 
       # Step 5: Start SSH Agent (for remote steps)
       - name: Start SSH Agent
@@ -51,7 +52,8 @@ jobs:
             sudo apt-get install -y python3 python3-pip &&
             if [ -f ~/hello-python-ci/requirements.txt ] && [ -s ~/hello-python-ci/requirements.txt ]; then
               pip3 install -r ~/hello-python-ci/requirements.txt
-            fi
+            fi && 
+            cd ~/hello-python-ci && pip3 install -e .
           "
 
       # Step 8: Deploy app on remote (nohup-style like your localhost example)
@@ -69,4 +71,4 @@ jobs:
             echo 'App started on remote server'
             echo '--- app.log ---'
             tail -n +1 app.log || true
-          "
+          " 
