@@ -1,10 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Encadré profil avec marge top pour ne pas être coupé -->
-<div class="profile-card" style="margin-top: 2rem;"> <!-- <-- ici -->
+
+<!-- Flash messages spécifiques au profil -->
+{% with messages = get_flashed_messages(category_filter=["bio"]) %}
+  {% if messages %}
+    <div class="flash-messages" style="margin-bottom: 1rem;">
+      {% for message in messages %}
+        <div class="alert" style="background-color: #4caf50; color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Encadré profil avec marge top -->
+<div class="profile-card" style="margin-top: 2rem;">
     <!-- Ligne nom + boutons -->
-    <div class="profile-header">
+    <div class="profile-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 style="margin: 0; font-size: 2rem; font-weight: 700; text-align: left;">
             @{{ user.name | replace(' ', '') }}
         </h1>
@@ -24,20 +38,18 @@
         {{ user.bio or "This user hasn’t written a bio yet." }}
     </p>
 
-
     <!-- Compteurs Following / Follower -->
-<div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-    <div>
-        <strong id="following-count" style="color: white;">0</strong> <span style="font-weight: 600;">Following</span>
+    <div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+        <div>
+            <strong id="following-count" style="color: white;">0</strong> <span style="font-weight: 600;">Following</span>
+        </div>
+        <div>
+            <strong id="followers-count" style="color: white;">0</strong> <span style="font-weight: 600;">Followers</span>
+        </div>
     </div>
-    <div>
-        <strong id="followers-count" style="color: white;">0</strong> <span style="font-weight: 600;">Followers</span>
-    </div>
-</div>
-
 
     <!-- Formulaire édition bio -->
-    <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none;">
+    <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none; margin-top: 0.5rem;">
         <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>
         <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
             <button type="submit" class="white-btn profile-btn">Save</button>
@@ -47,12 +59,12 @@
 </div>
 
 <!-- Tweets récents -->
-<div class="tweets-list">
+<div class="tweets-list" style="margin-top: 2rem;">
     {% if tweets %}
         {% for tweet in tweets %}
-            <div class="tweet-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                    <strong style="font-size: 1.05rem;">@{{ tweet.user.name }}</strong> <!-- <-- ici ajouté @ -->
+            <div class="tweet-card" style="padding: 1rem; border-bottom: 1px solid #ddd;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <strong style="font-size: 1.05rem;">@{{ tweet.user.name }}</strong>
                     <small style="color: gray; font-size: 0.85rem;">
                         {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
                     </small>
@@ -66,6 +78,7 @@
 </div>
 
 <script>
+// Toggle édition bio
 const editBtn = document.getElementById('edit-bio-btn');
 const cancelBtn = document.getElementById('cancel-bio-btn');
 const form = document.getElementById('edit-bio-form');
@@ -82,5 +95,16 @@ cancelBtn.addEventListener('click', () => {
     editBtn.style.display = 'inline-flex';
     bioText.style.display = 'block';
 });
+
+// Faire disparaître les flash messages après 3 secondes
+const flashMessages = document.querySelectorAll('.flash-messages .alert');
+flashMessages.forEach(msg => {
+    setTimeout(() => {
+        msg.style.transition = "opacity 0.5s";
+        msg.style.opacity = 0;
+        setTimeout(() => msg.remove(), 500);
+    }, 3000);
+});
 </script>
+
 {% endblock %}
