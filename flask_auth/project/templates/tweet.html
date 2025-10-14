@@ -7,16 +7,23 @@
      style="max-width: 500px; margin: 0 auto; padding: 2rem; background: #fff;
             border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
 
-    <form method="POST">
+    <form method="POST" novalidate> <!--novalidate pour enlever les message auto du navigateur-->
         {{ form.hidden_tag() }}
 
         <div class="field">
             {{ form.content.label(class="label") }}
             <div class="control">
-                {{ form.content(class="textarea", rows=4, style="border-radius:10px; border:1px solid #ddd; padding:0.75rem; font-size:1rem;") }}
+                {{ form.content(id="tweet-content",
+                class="textarea", 
+                rows=4, 
+                style="border-radius:10px; border:1px solid #ddd; padding:0.75rem; font-size:1rem;") }}
             </div>
         </div>
-
+        <!--compteur de caractère-->
+        <div id="char-counter"
+         style="text-align: right; color: gray; font-size: 0.9rem; margin-top: 0.25rem;">
+            0 / 280
+        </div>
         <!-- Boutons côte à côte, bien alignés -->
         <div class="field" style="margin-top: 1.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
@@ -44,6 +51,24 @@
             </div>
         </div>
     </form>
+    <!-- Script compteur de caractères-->
+    <script>
+        const textarea = document.getElementById('tweet-content');
+        const counter = document.getElementById('char-counter');
+        const maxChars = 280;
+
+        textarea.addEventListener('input', () => {
+            const length = textarea.value.length;
+            counter.textContent = `${length} / ${maxChars}`;
+
+            // Change la couleur si on dépasse la limite
+            if (length > maxChars) {
+            counter.style.color = 'red';
+            } else {
+            counter.style.color = 'gray';
+            }
+        });
+    </script>
 </div>
 
 {% with messages = get_flashed_messages() %}

@@ -36,7 +36,7 @@ def tweet():
             flash("An error occurred during publication. Please try again.")
     else:
         if form.content.errors:
-            flash("Your tweet cannot exceed 280 characters.")
+            flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
 
 ### DELETE TWEET

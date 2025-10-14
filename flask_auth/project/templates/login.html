@@ -23,7 +23,7 @@
         {% endif %}
         {% endwith %}
 
-        <form method="POST" action="/login">
+        <form method="POST" action="/login" novalidate> <!--novalidate pour enlever les message auto du navigateur-->
             <!-- Email -->
             <div class="field" style="margin-bottom: 1.2rem;">
                 <div class="control has-icons-left">
