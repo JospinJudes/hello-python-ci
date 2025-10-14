@@ -1,5 +1,8 @@
 pytest
 pytest-cov
 Flask
+Flask-Login
 Flask-SQLAlchemy
+Flask-WTF
+WTForms
 Werkzeug
