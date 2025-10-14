@@ -24,6 +24,18 @@
         {{ user.bio or "This user hasn’t written a bio yet." }}
     </p>
 
+    
+    <!-- Compteurs Following / Follower -->
+<div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+    <div>
+        <strong id="following-count" style="color: white;">0</strong> <span style="font-weight: 600;">Following</span>
+    </div>
+    <div>
+        <strong id="followers-count" style="color: white;">0</strong> <span style="font-weight: 600;">Followers</span>
+    </div>
+</div>
+
+
     <!-- Formulaire édition bio -->
     <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none;">
         <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>

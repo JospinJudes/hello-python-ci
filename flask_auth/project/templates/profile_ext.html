@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Encadré profil avec marge top -->
+<div class="profile-card" style="margin-top: 2rem;">
+    <!-- Ligne nom -->
+    <div class="profile-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 700; text-align: left;">
+            @{{ user.name | replace(' ', '') }}
+        </h1>
+        {% if not current_user.id == user.id %}
+        <button id="follow-btn" class="white-btn profile-btn">
+            Follow
+        </button>
+        {% endif %}
+    </div>
+
+    <!-- Bio -->
+    <p id="bio-text" class="bio-text">
+        {{ user.bio or "This user hasn’t written a bio yet." }}
+    </p>
+
+    <!-- Compteurs Following / Follower -->
+    <div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+        <div>
+            <strong id="following-count" style="color: white;">0</strong> <span style="font-weight: 600;">Following</span>
+        </div>
+        <div>
+            <strong id="followers-count" style="color: white;">0</strong> <span style="font-weight: 600;">Followers</span>
+        </div>
+    </div>
+</div>
+
+<!-- Tweets récents -->
+<div class="tweets-list">
+    {% if tweets %}
+        {% for tweet in tweets %}
+            <div class="tweet-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+                    <small style="color: gray; font-size: 0.85rem;">
+                        {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
+                    </small>
+                </div>
+                <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
+    {% endif %}
+</div>
+
+<script>
+// Bouton Follow / Unfollow (front-end pour l'instant)
+const followBtn = document.getElementById('follow-btn');
+
+if (followBtn) {
+    followBtn.addEventListener('click', () => {
+        if (followBtn.innerText === 'Follow') {
+            followBtn.innerText = 'Unfollow';
+            // Ici tu pourras faire un fetch POST vers Flask pour suivre l'utilisateur
+        } else {
+            followBtn.innerText = 'Follow';
+            // Ici tu pourras faire un fetch POST vers Flask pour ne plus suivre l'utilisateur
+        }
+    });
+}
+</script>
+{% endblock %}
