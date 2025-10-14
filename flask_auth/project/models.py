@@ -6,14 +6,12 @@ from datetime import datetime
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
+    bio = db.Column(db.String(300))  
     tweets = db.relationship('Tweet', back_populates='user', lazy='dynamic')
-
-
-    #post
 
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)

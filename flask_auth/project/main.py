@@ -12,12 +12,13 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+
 @main.route('/profile')
 @login_required
 def profile():
-    # récupère les tweets de l'utilisateur connecté, triés par date décroissante
     tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
-    return render_template('profile.html', name=current_user.name, tweets=tweets)
+    return render_template('profile.html', user=current_user, tweets=tweets)
+
 
 #####AJOUT POST
 @main.route('/tweet', methods=['GET', 'POST'])
@@ -31,3 +32,20 @@ def tweet():
         flash('Tweet posted!')
         return redirect(url_for('main.profile'))
     return render_template('tweet.html', form=form)
+
+
+
+@main.route('/profile/edit_bio', methods=['POST'])
+@login_required
+def edit_bio():
+    new_bio = request.form.get('bio', '').strip()
+
+    # Limite de caractères
+    if len(new_bio) > 300:
+        flash("Bio is too long (max 300 characters).")
+    else:
+        current_user.bio = new_bio
+        db.session.commit()
+        flash("Your bio has been updated!")
+
+    return redirect(url_for('main.profile'))

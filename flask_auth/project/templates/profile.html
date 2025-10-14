@@ -1,50 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title gradient-text" style="margin-bottom: 2rem;">
-  Welcome, {{ name }}!
-</h1>
+<!-- Encadré profil avec marge top pour ne pas être coupé -->
+<div class="profile-card" style="margin-top: 2rem;"> <!-- <-- ici -->
+    <!-- Ligne nom + boutons -->
+    <div class="profile-header">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 700; text-align: left;">
+            @{{ user.name | replace(' ', '') }}
+        </h1>
 
-<!-- Flash messages -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div style="background-color:#ffedd5; color:#b45309; padding:1rem; border-radius:10px;
-                  text-align:center; margin-bottom:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-          {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-<!-- Centered Post Tweet Button -->
-<div class="has-text-centered" style="margin-bottom: 2rem;">
-    <a href="{{ url_for('main.tweet') }}" class="navbar-button"
-       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
-              padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
-              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); background: linear-gradient(135deg, #ff416c, #ff4b2b);">
-        Post
-    </a>
-</div>
-
-<hr>
-
-<!-- Recent tweets -->
-{% if tweets %}
-<div class="tweets-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
-    {% for tweet in tweets %}
-    <div style="background: #fff; padding: 1.5rem 2rem; border-radius: 18px; 
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 1200px; width: 95%; margin: 0 auto; text-align: left;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
-            <small style="color: gray; font-size: 0.85rem; margin-left: 1rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: nowrap;">
+            <button id="edit-bio-btn" class="white-btn profile-btn">
+                Edit Bio
+            </button>
+            <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">
+                Post
+            </a>
         </div>
-        <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
     </div>
-    {% endfor %}
-</div>
-{% else %}
-<p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
-{% endif %}
 
+    <!-- Bio -->
+    <p id="bio-text" class="bio-text">
+        {{ user.bio or "This user hasn’t written a bio yet." }}
+    </p>
+
+    <!-- Formulaire édition bio -->
+    <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none;">
+        <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+            <button type="submit" class="white-btn profile-btn">Save</button>
+            <button type="button" id="cancel-bio-btn" class="cancel-btn profile-btn">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<!-- Tweets récents -->
+<div class="tweets-list">
+    {% if tweets %}
+        {% for tweet in tweets %}
+            <div class="tweet-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+                    <small style="color: gray; font-size: 0.85rem;">
+                        {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
+                    </small>
+                </div>
+                <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
+    {% endif %}
+</div>
+
+<script>
+const editBtn = document.getElementById('edit-bio-btn');
+const cancelBtn = document.getElementById('cancel-bio-btn');
+const form = document.getElementById('edit-bio-form');
+const bioText = document.getElementById('bio-text');
+
+editBtn.addEventListener('click', () => {
+    form.style.display = 'block';
+    editBtn.style.display = 'none';
+    bioText.style.display = 'none';
+});
+
+cancelBtn.addEventListener('click', () => {
+    form.style.display = 'none';
+    editBtn.style.display = 'inline-flex';
+    bioText.style.display = 'block';
+});
+</script>
 {% endblock %}
