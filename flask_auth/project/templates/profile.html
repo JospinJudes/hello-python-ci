@@ -40,6 +40,39 @@
             <small style="color: gray; font-size: 0.85rem; margin-left: 1rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
         </div>
         <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+<!-- Boutons Like et Commentaire -->
+        <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display: inline;">
+          <button type="submit" 
+                  style="background:none; border:none; color:#e0245e; cursor:pointer; font-weight:bold;">
+              ❤️ Like ({{ tweet.likes_count }})
+          </button>
+        </form>
+
+        <!-- Zone de commentaire -->
+        <div style="margin-top: 1rem;">
+            <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
+                <input type="text" name="comment_content" placeholder="Add a comment..."
+                        style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd;">
+                <button type="submit" 
+                        style="padding:0.4rem 0.8rem; border-radius:8px; border:none; 
+                            background-color:#ff416c; color:white; cursor:pointer;">
+                  Comment
+                </button>
+            </form>
+
+          <!-- Liste des commentaires -->
+          {% if tweet.comments %}
+              <ul style="margin-top:0.8rem; padding-left:1rem; list-style:none;">
+                  {% for comment in tweet.comments %}
+                      <li style="margin-bottom:0.4rem;">
+                          <strong>{{ comment.user.name }}</strong> :
+                          {{ comment.content }}
+                      </li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </div>
+
     </div>
     {% endfor %}
 </div>

@@ -15,9 +15,34 @@ class User(UserMixin, db.Model):
 
     #post
 
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
+
+    user = db.relationship('User', backref='likes', lazy=True)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
+
+    user = db.relationship('User', backref='comments', lazy=True)
+
+
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(280))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='tweets')
+    likes = db.relationship('Like', backref='tweet', lazy=True)
+    comments = db.relationship('Comment', backref='tweet', lazy=True)
+    
+
+    @property
+    def likes_count(self):
+    return len(self.likes)
