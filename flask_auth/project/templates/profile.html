@@ -40,6 +40,20 @@
             <small style="color: gray; font-size: 0.85rem; margin-left: 1rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
         </div>
         <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+
+        <!-- ======= BOUTON SUPPRIMER (apparait seulement si le tweet appartient à current_user) ======= -->
+        {% if tweet.user_id == current_user.id %}
+        <div style="margin-top: 0.9rem;">
+            <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST"
+                  onsubmit="return confirm('Are you sure you want to delete this tweet ?');"
+                  style="display: inline-block;">
+                <button type="submit" class="delete-btn"
+                        style="background:#ff4b2b; color:white; border:none; padding:0.45rem 0.9rem;
+                               border-radius:8px; cursor:pointer; font-weight:600;">
+                     Supprimer
+                </button>
+            </form>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

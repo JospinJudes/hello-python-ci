@@ -1,13 +1,13 @@
-.venv/
-
-# Fichiers Python compilés
+# Ignorer les fichiers et dossiers générés automatiquement
 __pycache__/
 *.pyc
-
-# Base de données locale
-instance/
+*.pyo
+*.pyd
+*.db
 *.sqlite
-
-# Environnement virtuel
+instance/
+.env
 venv/
 env/
+.mypy_cache/
+.pytest_cache/
