@@ -15,7 +15,7 @@
          
         <h3 class="title gradient-text" style="font-size: 2.4rem; margin-bottom: 1.8rem;">Sign Up</h3>
 
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(category_filter=['sign up']) %}
         {% if messages %}
             <div class="notification is-danger" 
                  style="border-radius: 18px; background: rgba(255, 0, 0, 0.673);">
