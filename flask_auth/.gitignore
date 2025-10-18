@@ -1,1 +1,13 @@
 .venv/
+
+# Fichiers Python compilés
+__pycache__/
+*.pyc
+
+# Base de données locale
+instance/
+*.sqlite
+
+# Environnement virtuel
+venv/
+env/
