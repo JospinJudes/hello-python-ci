@@ -25,6 +25,10 @@ instance/
 *.sqlite
 *.db
 
+instance/*.sqlite
+instance/*.db
+instance/*-journal
+
 # Pytest cache
 .pytest_cache/
 EOF

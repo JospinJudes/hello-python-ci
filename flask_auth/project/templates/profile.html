@@ -10,6 +10,18 @@
         <div class="alert">{{ message }}</div>
       {% endfor %}
     </div>
+  {% endif %} 
+{% endwith %}
+
+<!-- Flash messages généraux (success / error) -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="notification {% if category == 'success' %}is-success{% else %}is-danger{% endif %}"
+           style="border-radius: 18px;">
+        {{ message }}
+      </div>
+    {% endfor %}
   {% endif %}
 {% endwith %}
 
@@ -29,6 +41,17 @@
                     </button>
                 </form>
             {% endif %}
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: nowrap;">
+            <button id="edit-bio-btn" class="white-btn profile-btn">
+                Edit Bio
+            </button>
+            <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">
+                Post
+            </a>
+            <a href="{{ url_for('auth.password_page') }}" class="button profile-btn white-btn">
+                Change Password
+            </a>
         </div>
     </div>
 
