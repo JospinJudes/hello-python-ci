@@ -1,25 +1,25 @@
-<!-- templates/signup.html -->
-
 {% extends "base.html" %}
 
 {% block content %}
 <div class="column is-4 is-offset-4">
     <div class="box has-text-centered"
-         style="background: rgba(255, 255, 255, 0.6);
-                border-radius: 28px;
-                padding: 2.5rem;
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                border: 1px solid rgba(255, 255, 255, 0.4);">
+         style="
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 28px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+         ">
          
         <h3 class="title gradient-text" style="font-size: 2.4rem; margin-bottom: 1.8rem;">Sign Up</h3>
 
         {% with messages = get_flashed_messages(category_filter=['sign up']) %}
         {% if messages %}
             <div class="notification is-danger" 
-                 style="border-radius: 18px; background: rgba(255, 0, 0, 0.673);">
-                {{ messages[0] }}. 
+                 style="border-radius: 18px; background: rgba(255, 0, 0, 0.67); color: white; margin-bottom: 1rem;">
+                {{ messages[0] }}  
                 Go to <a href="{{ url_for('auth.login') }}" class="gradient-text">login page</a>.
             </div>
         {% endif %}
@@ -34,8 +34,14 @@
                            name="email" 
                            placeholder="Enter your email" 
                            required
-                           style="border-radius: 18px; padding: 1rem; font-size: 1rem;
-                                  background: rgba(255,255,255,0.9); color: #333; border: none;">
+                           style="
+                               border-radius: 18px; 
+                               padding: 1rem; 
+                               font-size: 1rem;
+                               background: rgba(255,255,255,0.9); 
+                               color: #333; 
+                               border: 1px solid #ddd;
+                           ">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope" style="color: #666;"></i>
                     </span>
@@ -50,8 +56,14 @@
                            name="name" 
                            placeholder="Enter your name" 
                            required
-                           style="border-radius: 18px; padding: 1rem; font-size: 1rem;
-                                  background: rgba(255,255,255,0.9); color: #333; border: none;">
+                           style="
+                               border-radius: 18px; 
+                               padding: 1rem; 
+                               font-size: 1rem;
+                               background: rgba(255,255,255,0.9); 
+                               color: #333; 
+                               border: 1px solid #ddd;
+                           ">
                     <span class="icon is-small is-left">
                         <i class="fas fa-user" style="color: #666;"></i>
                     </span>
@@ -66,8 +78,14 @@
                            name="password" 
                            placeholder="Enter your password" 
                            required
-                           style="border-radius: 18px; padding: 1rem; font-size: 1rem;
-                                  background: rgba(255,255,255,0.9); color: #333; border: none;">
+                           style="
+                               border-radius: 18px; 
+                               padding: 1rem; 
+                               font-size: 1rem;
+                               background: rgba(255,255,255,0.9); 
+                               color: #333; 
+                               border: 1px solid #ddd;
+                           ">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock" style="color: #666;"></i>
                     </span>
@@ -76,10 +94,18 @@
 
             <!-- Submit button -->
             <button class="button is-medium is-fullwidth" 
-                    style="margin-top: 1.5rem; border-radius: 22px; padding: 1rem; font-size: 1.1rem;
-                           background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
-                           border: none; color: white; font-weight: bold;
-                           box-shadow: 0 4px 14px rgba(255, 75, 43, 0.3); transition: 0.3s;">
+                    style="
+                        margin-top: 1.5rem; 
+                        border-radius: 22px; 
+                        padding: 1rem; 
+                        font-size: 1.1rem;
+                        background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
+                        border: none; 
+                        color: white; 
+                        font-weight: bold;
+                        box-shadow: 0 4px 14px rgba(255, 75, 43, 0.3); 
+                        transition: 0.3s;
+                    ">
                 Sign Up
             </button>
         </form>

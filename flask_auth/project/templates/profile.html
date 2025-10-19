@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<!-- Flash messages spécifiques au profil -->
-{% with messages = get_flashed_messages(category_filter=["bio"]) %}
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(category_filter=["bio", "follow"]) %}
   {% if messages %}
     <div class="flash-messages" style="margin-bottom: 1rem;">
       {% for message in messages %}
@@ -15,95 +15,107 @@
   {% endif %}
 {% endwith %}
 
-<!-- Encadré profil avec marge top -->
-<div class="profile-card" style="margin-top: 2rem;">
-    <!-- Ligne nom + boutons -->
-    <div class="profile-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin: 0; font-size: 2rem; font-weight: 700; text-align: left;">
-            @{{ user.name | replace(' ', '') }}
-        </h1>
+<!-- Carte du profil -->
+<div class="profile-card" style="margin-top: 2rem; background: linear-gradient(135deg, #ff416c, #ff4b2b); padding: 1.5rem; border-radius: 1rem;">
+  <div class="profile-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="margin: 0; font-size: 2rem; font-weight: 700; color: white;">
+      @{{ user.name | replace(' ', '') }}
+    </h1>
 
-        <div style="display: flex; gap: 0.5rem; flex-wrap: nowrap;">
-            <button id="edit-bio-btn" class="white-btn profile-btn">
-                Edit Bio
-            </button>
-            <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">
-                Post
-            </a>
-        </div>
+    <div style="display: flex; gap: 0.5rem;">
+      {% if is_own_profile %}
+        <!-- Boutons pour soi-même -->
+        <button id="edit-bio-btn" class="white-btn profile-btn">Edit Bio</button>
+        <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">Post</a>
+      {% else %}
+        <!-- Bouton Follow/Unfollow -->
+        <form action="{{ url_for('main.unfollow', user_id=user.id) if current_user.is_following(user) else url_for('main.follow', user_id=user.id) }}" method="POST" style="margin: 0;">
+          <button type="submit" class="white-btn profile-btn">
+            {% if current_user.is_following(user) %}Unfollow{% else %}Follow{% endif %}
+          </button>
+        </form>
+      {% endif %}
     </div>
+  </div>
 
-    <!-- Bio -->
-    <p id="bio-text" class="bio-text">
-        {{ user.bio or "This user hasn’t written a bio yet." }}
-    </p>
+  <!-- Bio -->
+  <p id="bio-text" class="bio-text" style="margin-top: 0.75rem; color: #fff;">
+    {{ user.bio or "This user hasn’t written a bio yet." }}
+  </p>
 
-    <!-- Compteurs Following / Follower -->
-    <div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-        <div>
-            <strong id="following-count" style="color: white;">0</strong> <span style="font-weight: 600;">Following</span>
-        </div>
-        <div>
-            <strong id="followers-count" style="color: white;">0</strong> <span style="font-weight: 600;">Followers</span>
-        </div>
+  <!-- Formulaire édition bio -->
+  {% if is_own_profile %}
+  <form id="edit-bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none; margin-top: 0.5rem;">
+    <textarea name="bio" rows="3" maxlength="300" style="width: 100%; border-radius: 0.5rem; padding: 0.5rem;">{{ user.bio or '' }}</textarea>
+    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+      <button type="submit" class="white-btn profile-btn">Save</button>
+      <button type="button" id="cancel-bio-btn" class="cancel-btn profile-btn">Cancel</button>
     </div>
+  </form>
+  {% endif %}
 
-    <!-- Formulaire édition bio -->
-    <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display: none; margin-top: 0.5rem;">
-        <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-            <button type="submit" class="white-btn profile-btn">Save</button>
-            <button type="button" id="cancel-bio-btn" class="cancel-btn profile-btn">Cancel</button>
-        </div>
-    </form>
+  <!-- Compteurs Following / Followers -->
+  <div class="follow-stats" style="display: flex; gap: 1.5rem; margin-top: 1rem; color: #fff;">
+    <div>
+      <strong id="following-count">{{ following_count }}</strong> Following
+    </div>
+    <div>
+      <strong id="followers-count">{{ followers_count }}</strong> Followers
+    </div>
+  </div>
 </div>
 
-<!-- Tweets récents -->
+<!-- Liste des tweets -->
 <div class="tweets-list" style="margin-top: 2rem;">
-    {% if tweets %}
-        {% for tweet in tweets %}
-            <div class="tweet-card" style="padding: 1rem; border-bottom: 1px solid #ddd;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <strong style="font-size: 1.05rem;">@{{ tweet.user.name }}</strong>
-                    <small style="color: gray; font-size: 0.85rem;">
-                        {{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}
-                    </small>
-                </div>
-                <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
-    {% endif %}
+  {% if tweets %}
+    {% for tweet in tweets %}
+      <div class="tweet-card" style="padding: 1rem; border: 1px solid #ccc; background-color: white; border-radius: 0.75rem; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); color: black;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong>@{{ tweet.user.name }}</strong>
+          <small style="color: #555; font-size: 0.85rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+        <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+
+        {% if is_own_profile and tweet.user_id == current_user.id %}
+        <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" style="margin-top: 0.5rem;">
+          <button type="submit" class="cancel-btn profile-btn" style="background-color: #e74c3c; color: white; border: none; border-radius: 0.5rem; padding: 0.4rem 0.8rem; cursor: pointer;">Delete</button>
+        </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
+  {% endif %}
 </div>
 
+<!-- JS pour Edit Bio et flash messages -->
 <script>
-// Toggle édition bio
 const editBtn = document.getElementById('edit-bio-btn');
 const cancelBtn = document.getElementById('cancel-bio-btn');
 const form = document.getElementById('edit-bio-form');
 const bioText = document.getElementById('bio-text');
 
-editBtn.addEventListener('click', () => {
+if (editBtn && cancelBtn && form && bioText) {
+  editBtn.addEventListener('click', () => {
     form.style.display = 'block';
     editBtn.style.display = 'none';
     bioText.style.display = 'none';
-});
+  });
 
-cancelBtn.addEventListener('click', () => {
+  cancelBtn.addEventListener('click', () => {
     form.style.display = 'none';
     editBtn.style.display = 'inline-flex';
     bioText.style.display = 'block';
-});
+  });
+}
 
-// Faire disparaître les flash messages après 3 secondes
-const flashMessages = document.querySelectorAll('.flash-messages .alert');
-flashMessages.forEach(msg => {
-    setTimeout(() => {
-        msg.style.transition = "opacity 0.5s";
-        msg.style.opacity = 0;
-        setTimeout(() => msg.remove(), 500);
-    }, 3000);
+// Disparition flash messages après 3 secondes
+document.querySelectorAll('.flash-messages .alert').forEach(msg => {
+  setTimeout(() => {
+    msg.style.transition = "opacity 0.5s";
+    msg.style.opacity = 0;
+    setTimeout(() => msg.remove(), 500);
+  }, 3000);
 });
 </script>
 

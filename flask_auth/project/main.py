@@ -17,7 +17,38 @@ def index():
 @login_required
 def profile():
     tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
-    return render_template('profile.html', user=current_user, tweets=tweets)
+    following_count = current_user.followed.count()
+    followers_count = current_user.followers.count()
+    return render_template(
+        'profile.html',
+        user=current_user,
+        tweets=tweets,
+        following_count=following_count,
+        followers_count=followers_count,
+        is_own_profile=True  # on indique que c’est ton profil
+    )
+
+
+@main.route('/profile/<int:user_id>')
+@login_required
+def user_profile(user_id):
+    user = User.query.get_or_404(user_id)
+    tweets = user.tweets.order_by(Tweet.timestamp.desc()).all()
+    following_count = user.followed.count()
+    followers_count = user.followers.count()
+    return render_template(
+        'profile.html',
+        user=user,
+        tweets=tweets,
+        following_count=following_count,
+        followers_count=followers_count,
+        is_own_profile=(user.id == current_user.id)  # ✅ comparaison directe
+    )
+
+
+
+
+
 
 
 #####AJOUT POST
@@ -39,6 +70,9 @@ def tweet():
         if form.content.errors:
             flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
+
+
+
 
 ### DELETE TWEET
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
@@ -66,7 +100,6 @@ def delete_tweet(tweet_id):
 def edit_bio():
     new_bio = request.form.get('bio', '').strip()
 
-    # Limite de caractères
     if len(new_bio) > 300:
         flash("Bio is too long (max 300 characters)", category='bio')
     else:
@@ -75,3 +108,31 @@ def edit_bio():
         flash("Your bio has been updated!", category="bio")
 
     return redirect(url_for('main.profile'))
+
+
+
+##### FOLLOW / UNFOLLOW #####
+@main.route('/follow/<int:user_id>', methods=['POST'])
+@login_required
+def follow(user_id):
+    user = User.query.get_or_404(user_id)
+    if user == current_user:
+        flash("You cannot follow yourself.", category="follow")
+        return redirect(url_for('main.user_profile', user_id=user.id))
+    current_user.follow(user)
+    db.session.commit()
+    flash(f"You are now following {user.name}!", category="follow")
+    return redirect(url_for('main.user_profile', user_id=user.id))
+
+
+@main.route('/unfollow/<int:user_id>', methods=['POST'])
+@login_required
+def unfollow(user_id):
+    user = User.query.get_or_404(user_id)
+    if user == current_user:
+        flash("You cannot unfollow yourself.", category="follow")
+        return redirect(url_for('main.user_profile', user_id=user.id))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash(f"You unfollowed {user.name}.", category="follow")
+    return redirect(url_for('main.user_profile', user_id=user.id))

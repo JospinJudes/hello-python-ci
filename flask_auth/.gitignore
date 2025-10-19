@@ -1,1 +1,30 @@
+
 .venv/
+# 1) Ignorer correctement ces fichiers à l’avenir
+cat > .gitignore <<'EOF'
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+
+# Envs
+.env
+.venv
+venv/
+ENV/
+env/
+
+# Flask / data locale
+instance/
+*.sqlite
+*.db
+
+# Pytest cache
+.pytest_cache/
+EOF
