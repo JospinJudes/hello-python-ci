@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from .models import Tweet, Like, Comment
 from . import db
 from .forms import TweetForm
+from sqlalchemy import func
 
 main = Blueprint('main', __name__)
 
@@ -17,11 +18,12 @@ def index():
 def profile():
     sort = request.args.get('sort', 'timeline')
     if sort == 'ranked':
-        # tri par nombre de likes décroissant
-        tweets = (Tweet.query
-                  .filter_by(user_id=current_user.id)
-                  .order_by(Tweet.likes.desc())
-                  .all())
+        tweets = (db.session.query(Tweet)
+              .filter(Tweet.user_id == current_user.id)
+              .outerjoin(Like)
+              .group_by(Tweet.id)
+              .order_by(func.count(Like.id).desc())
+              .all())
     elif sort == 'timeline' :
         # tri chronologique (timeline)
         tweets = (Tweet.query
