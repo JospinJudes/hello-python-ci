@@ -42,7 +42,7 @@ class Tweet(db.Model):
     likes = db.relationship('Like', backref='tweet', lazy=True)
     comments = db.relationship('Comment', backref='tweet', lazy=True)
     
-
-    @property
-    def likes_count(self):
+@property
+def likes_count(self):
     return len(self.likes)
+

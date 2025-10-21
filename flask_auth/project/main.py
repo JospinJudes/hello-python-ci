@@ -32,7 +32,7 @@ def tweet():
         return redirect(url_for('main.profile'))
     return render_template('tweet.html', form=form)
 
-@app.route('/like/<int:tweet_id>', methods=['POST'])
+@main.route('/like/<int:tweet_id>', methods=['POST'])
 @login_required
 def like_tweet(tweet_id):
     tweet = Tweet.query.get_or_404(tweet_id)
@@ -47,7 +47,7 @@ def like_tweet(tweet_id):
     db.session.commit()
     return redirect(url_for('index'))
 
-@app.route('/comment/<int:tweet_id>', methods=['POST'])
+@main.route('/comment/<int:tweet_id>', methods=['POST'])
 @login_required
 def comment_tweet(tweet_id):
     content = request.form.get('content')
