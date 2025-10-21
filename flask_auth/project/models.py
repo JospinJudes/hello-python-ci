@@ -32,26 +32,58 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             self.followed.append(user)
 
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
 
-    def is_following(self, user): #verifie si self suit user
-        return self.followed.filter(
-            followers.c.followed_id == user.id
-        ).count() > 0
-    
-    def delete_follower(self,user):
-        if user in self.followers:
-            self.followers.remove(user)
+    user = db.relationship('User', backref='likes', lazy=True)
 
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
 
-#post
+    user = db.relationship('User', backref='comments', lazy=True)
+
+
+# ==========================
+# Méthodes de follow / unfollow (à garder)
+# ==========================
+
+def unfollow(self, user):
+    if self.is_following(user):
+        self.followed.remove(user)
+
+def is_following(self, user):  # Vérifie si self suit user
+    return self.followed.filter(
+        followers.c.followed_id == user.id
+    ).count() > 0
+
+def delete_follower(self, user):
+    if user in self.followers:
+        self.followers.remove(user)
+
+
+# ==========================
+# Classe Tweet (avec likes/comments)
+# ==========================
+
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(280))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='tweets')
+
+    likes = db.relationship('Like', backref='tweet', lazy=True)
+    comments = db.relationship('Comment', backref='tweet', lazy=True)
+
+    @property
+    def likes_count(self):
+        return len(self.likes)
+
+
 

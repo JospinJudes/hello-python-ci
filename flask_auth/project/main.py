@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import Tweet
+from .models import Tweet, Like, Comment
 from . import db
 from .forms import TweetForm
 
@@ -43,18 +43,50 @@ def tweet():
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
 @login_required
 def delete_tweet(tweet_id):
-    tweet = Tweet.query.get_or_404(tweet_id) #si le tweet n'existe pas on renvoit directement l'utilisateur vers une "Page not found"
+    tweet = Tweet.query.get_or_404(tweet_id)  # Si le tweet n'existe pas on renvoie une erreur 404
     
-    #verifier que le tweet appartient à l'utilisateur
+    # Vérifier que le tweet appartient à l'utilisateur
     if tweet.user_id != current_user.id:
         flash("You cannot delete this tweet.")
         return redirect(url_for('main.profile'))
     try:
         db.session.delete(tweet)
         db.session.commit()
-        #flash("Tweet supprimé avec succès !")
+        # flash("Tweet supprimé avec succès !")
     except Exception:
         db.session.rollback()
         flash("An error occurred during deletion.")
         
+    return redirect(url_for('main.profile'))
+
+
+### LIKE / UNLIKE TWEET
+@main.route('/like/<int:tweet_id>', methods=['POST'])
+@login_required
+def like_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    like = Like.query.filter_by(user_id=current_user.id, tweet_id=tweet_id).first()
+
+    if like:
+        db.session.delete(like)  # Unlike
+    else:
+        new_like = Like(user_id=current_user.id, tweet_id=tweet_id)
+        db.session.add(new_like)
+
+    db.session.commit()
+    return redirect(url_for('main.profile'))
+
+
+### COMMENT TWEET
+@main.route('/comment/<int:tweet_id>', methods=['POST'])
+@login_required
+def comment_tweet(tweet_id):
+    content = request.form.get('content')
+    if not content:
+        flash('Comment cannot be empty.')
+        return redirect(url_for('main.profile'))
+
+    comment = Comment(content=content, user_id=current_user.id, tweet_id=tweet_id)
+    db.session.add(comment)
+    db.session.commit()
     return redirect(url_for('main.profile'))
