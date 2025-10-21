@@ -1,82 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title gradient-text">Post a Tweet</h1>
+<h1 class="title gradient-text" style="text-align:center; margin-bottom:2rem;">Post a Tweet</h1>
 
 <div class="container"
-     style="max-width: 500px; margin: 0 auto; padding: 2rem; background: #fff;
-            border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+     style="max-width:500px; margin:0 auto; padding:2rem; background:#fff;
+            border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 
-    <form method="POST" novalidate> <!--novalidate pour enlever les message auto du navigateur-->
+    <form method="POST" novalidate>
         {{ form.hidden_tag() }}
 
+        <!-- Zone de texte -->
         <div class="field">
             {{ form.content.label(class="label") }}
             <div class="control">
                 {{ form.content(id="tweet-content",
-                class="textarea", 
-                rows=4, 
-                style="border-radius:10px; border:1px solid #ddd; padding:0.75rem; font-size:1rem;") }}
+                class="textarea",
+                rows=4,
+                style="border-radius:10px; border:1px solid #ddd; padding:0.75rem; font-size:1rem; resize:none; height:120px;") }}
             </div>
         </div>
-        <!--compteur de caractère-->
-        <div id="char-counter"
-         style="text-align: right; color: gray; font-size: 0.9rem; margin-top: 0.25rem;">
+
+        <!-- Compteur de caractères -->
+        <div id="char-counter" style="text-align:right; color:gray; font-size:0.9rem; margin-top:0.25rem;">
             0 / 280
         </div>
-        <!-- Boutons côte à côte, bien alignés -->
-        <div class="field" style="margin-top: 1.8rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
 
-                <!-- Bouton Return -->
-                <a href="{{ url_for('main.profile') }}" class="navbar-button"
-                   style="flex: 1; text-align: center; font-size: 1rem; font-weight: 500;
-                          padding: 0.7rem 1.2rem; border-radius: 25px;
-                          background: linear-gradient(135deg, #ff6a00, #ffd500);
-                          color: white; text-decoration: none; box-shadow: 0 3px 8px rgba(255, 165, 0, 0.3);
+        <!-- Boutons côte à côte -->
+        <div class="field" style="margin-top:2rem;">
+            <div style="display:flex; gap:1rem;">
+                <!-- Return -->
+                <a href="{{ url_for('main.profile') }}"
+                   class="navbar-button"
+                   style="flex:1; text-align:center; font-size:1rem; font-weight:500;
+                          padding:0.7rem 0; border-radius:25px;
+                          background: linear-gradient(135deg,#ff6a00,#ffd500);
+                          color:white; text-decoration:none; box-shadow:0 3px 8px rgba(255,165,0,0.3);
                           transition: transform 0.2s ease, box-shadow 0.2s ease;">
                     Return
                 </a>
 
-                <!-- Bouton Post -->
-                <button type="submit" class="navbar-button"
-                    style="flex: 1; font-size: 1rem; font-weight: 500;
-                           padding: 0.7rem 1.2rem; border-radius: 25px;
-                           background: linear-gradient(135deg, #ff416c, #ff4b2b);
-                           color: white; border: none; cursor: pointer;
-                           box-shadow: 0 3px 8px rgba(255, 75, 43, 0.3);
-                           transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <!-- Post -->
+                <button type="submit"
+                        class="navbar-button"
+                        style="flex:1; font-size:1rem; font-weight:500;
+                               padding:0.7rem 0; border-radius:25px;
+                               background: linear-gradient(135deg,#ff416c,#ff4b2b);
+                               color:white; border:none; cursor:pointer;
+                               box-shadow:0 3px 8px rgba(255,75,43,0.3);
+                               transition: transform 0.2s ease, box-shadow 0.2s ease;">
                     Post
                 </button>
             </div>
         </div>
     </form>
-    <!-- Script compteur de caractères-->
-    <script>
-        const textarea = document.getElementById('tweet-content');
-        const counter = document.getElementById('char-counter');
-        const maxChars = 280;
 
-        textarea.addEventListener('input', () => {
-            const length = textarea.value.length;
-            counter.textContent = `${length} / ${maxChars}`;
-
-            // Change la couleur si on dépasse la limite
-            if (length > maxChars) {
-            counter.style.color = 'red';
-            } else {
-            counter.style.color = 'gray';
-            }
-        });
-    </script>
-</div>
-
-{% with messages = get_flashed_messages() %}
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <div class="notification is-danger" style="border-radius: 18px; background: rgba(255, 37, 37, 0.738);">
+            <div class="notification is-danger"
+                 style="border-radius:18px; background: rgba(255,37,37,0.738); margin-top:1rem;">
                 {{ messages[0] }}
             </div>
         {% endif %}
-{% endwith %}
+    {% endwith %}
+</div>
+
+<!-- Script compteur de caractères -->
+<script>
+const textarea = document.getElementById('tweet-content');
+const counter = document.getElementById('char-counter');
+const maxChars = 280;
+
+textarea.addEventListener('input', () => {
+    const length = textarea.value.length;
+    counter.textContent = `${length} / ${maxChars}`;
+    counter.style.color = length > maxChars ? 'red' : 'gray';
+});
+</script>
 
 {% endblock %}

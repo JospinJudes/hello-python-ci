@@ -37,13 +37,21 @@
         }
 
         @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Navbar */
-       .navbar-button {
+        .navbar-button {
             border-radius: 24px;
             font-weight: 500;
             font-size: 1rem;
@@ -52,7 +60,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: #ff416c;
-            color: white; /* texte blanc */
+            color: white;
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -62,14 +70,13 @@
             transform: translateY(-2px);
             background: #ff4b2b;
             box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3);
-            color: white; /* garder le texte blanc */
+            color: white;
         }
 
         .navbar-button.active {
             background: #ff6a00;
         }
 
-    
         /* Hero / Content */
         .hero-body {
             display: flex;
@@ -84,10 +91,82 @@
             max-width: 900px;
         }
 
+        /* Flash messages */
+        .flash-messages .alert {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background-color: #4caf50;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s ease;
+        }
+
+        /* Buttons globaux */
+        .profile-btn {
+            font-size: 1rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .white-btn {
+            background: #fff;
+            color: #ff416c;
+            border: 1px solid #ff416c;
+        }
+
+        .white-btn:hover {
+            background: #ff416c;
+            color: #fff;
+        }
+
+        /* Bio Save & Cancel */
+        .bio-save-btn {
+            background: #48c774;
+            color: white;
+            border: none;
+        }
+
+        .bio-cancel-btn {
+            background: #ccc;
+            color: #333;
+            border: none;
+        }
+
+        /* Tweet Delete */
+        .tweet-delete-btn {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            border: none;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tweet-delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
         /* Profile Card */
         .profile-card {
             width: 100%;
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
             color: white;
             padding: 2rem;
             border-radius: 1rem;
@@ -104,7 +183,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        /* Tweet Card */
+        /* Tweet Cards */
         .tweet-card {
             background-color: #fff;
             border-radius: 1rem;
@@ -118,112 +197,28 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
-        /* Profile Header */
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        /* Bio */
-        .bio-text {
-            margin: 0.5rem 0;
-            font-size: 1.1rem;
-            font-style: italic;
-            color: #fff;
-        }
-
-        .bio-form textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            background: #fff;
-            color: #333;
-            font-size: 1rem;
-        }
-
-        /* Buttons */
-        .profile-btn {
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 16px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            line-height: 1;
-            cursor: pointer;
-            text-decoration: none;
-            min-width: 100px;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .profile-btn:hover {
-            transform: translateY(-2px);
-            color: #ff416c; /* garde la couleur originale au hover */
-
-        }
-
-        .white-btn {
-            background: #fff;
-            color: #ff416c;
-            border: 1px solid #ff416c;
-        }
-
-        .cancel-btn {
-            background: #ccc;
-            color: #333;
-            border: none;
-        }
-
         /* Tweets List */
         .tweets-list {
             display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            flex-direction: column; /* empile les tweets verticalement */
+            gap: 2rem;            /* espace entre chaque tweet */
+            margin-top: 1rem;
         }
 
-        .tweet-card p,
-        .tweet-card small,
-        .tweet-card strong {
-            color: #333;
-        }
-
-        .tweet-card button {
-            transition: all 0.2s ease;
-        }
-
-        .tweet-card button:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Flash messages */
-        .flash-messages .alert {
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            background-color: #4caf50;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: opacity 0.5s ease;
-        }
     </style>
 </head>
 
 <body>
     <!-- Navbar -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; flex-wrap: wrap;">
-        <div style="display: flex; gap: 0.5rem;">
+    <nav style="display:flex; justify-content: space-between; align-items:center; padding:1rem; flex-wrap: wrap;">
+        <div style="display:flex; gap:0.5rem;">
             <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
             {% endif %}
         </div>
 
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display:flex; gap:0.5rem;">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('auth.logout') }}" class="navbar-button">Logout</a>
             {% else %}
@@ -231,16 +226,38 @@
                 <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}">Sign Up</a>
             {% endif %}
         </div>
-    </div>
+    </nav>
 
-    <!-- Section principale -->
+    <!-- Main Section -->
     <section class="hero">
         <div class="hero-body">
             <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="flash-messages">
+                      {% for category, message in messages %}
+                        <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
                 {% block content %}{% endblock %}
             </div>
         </div>
     </section>
+
+    <!-- JS pour flash messages -->
+    <script>
+        document.querySelectorAll('.flash-messages .alert').forEach(msg => {
+            setTimeout(() => {
+                msg.style.opacity = 0;
+                setTimeout(() => msg.remove(), 500);
+            }, 3000);
+        });
+    </script>
 </body>
 
 </html>
