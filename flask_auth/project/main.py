@@ -15,11 +15,21 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    # récupère les tweets de l'utilisateur connecté, triés par date décroissante
-    tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
-    return render_template('profile.html', name=current_user.name, tweets=tweets)
+    sort = request.args.get('sort', 'timeline')
+    if sort == 'ranked':
+        # tri par nombre de likes décroissant
+        tweets = (Tweet.query
+                  .filter_by(user_id=current_user.id)
+                  .order_by(Tweet.likes.desc())
+                  .all())
+    elif sort == 'timeline' :
+        # tri chronologique (timeline)
+        tweets = (Tweet.query
+                  .filter_by(user_id=current_user.id)
+                  .order_by(Tweet.timestamp.desc())
+                  .all())
+    return render_template('profile.html', name=current_user.name, tweets=tweets, sort = sort)
 
-#####AJOUT POST
 @main.route('/tweet', methods=['GET', 'POST'])
 @login_required
 def tweet():
