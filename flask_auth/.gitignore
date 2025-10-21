@@ -1,1 +1,13 @@
-.venv/
+# Ignorer les fichiers et dossiers générés automatiquement
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+instance/
+.env
+venv/
+env/
+.mypy_cache/
+.pytest_cache/

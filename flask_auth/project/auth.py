@@ -20,20 +20,20 @@ def login_post():
 
     # check if required fields are missing
     if not email or not password:
-        flash('Please complete all fields before proceeding.')
+        flash('Please complete all fields before proceeding.','login')
         return redirect(url_for('auth.login')) # reload the page
 
     user = User.query.filter_by(email=email).first()
     
     # check if user actually exists
     if not user:
-        flash('No account found with this email address.')
+        flash('No account found with this email address.','login')
         return redirect(url_for('auth.login')) # reload the page
 
     
     # take the user supplied password, hash it, and compare it to the hashed password in database
     if not user or not check_password_hash(user.password, password): 
-        flash('Please check your login details and try again.')
+        flash('Please check your login details and try again.','login')
         return redirect(url_for('auth.login')) # if user doesn't exist or password is wrong, reload the page
 
     # if the above check passes, then we know the user has the right credentials
@@ -52,7 +52,7 @@ def signup_post():
 
     user = User.query.filter_by(email=email).first()
     if user:
-        flash('Email address already exists')
+        flash('Email address already exists','sign up')
         return redirect(url_for('auth.signup'))
 
     # ⚡ Utilisation correcte de pbkdf2:sha256
@@ -65,7 +65,7 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
 
-    flash('Compte créé avec succès !')
+    flash('Compte créé avec succès !','sign up')
     return redirect(url_for('auth.login'))
 
 
