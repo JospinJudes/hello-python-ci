@@ -2,38 +2,29 @@
 
 {% block content %}
 
-<!-- Flash messages -->
-{% with messages = get_flashed_messages(category_filter=["bio","follow"]) %}
-  {% if messages %}
-    <div class="flash-messages" style="margin-bottom: 1rem;">
-      {% for message in messages %}
-        <div class="alert">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %} 
-{% endwith %}
-
-<!-- Flash messages généraux (success / error) -->
+<!-- Flash messages (tous les types) -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    {% for category, message in messages %}
-      <div class="notification {% if category == 'success' %}is-success{% else %}is-danger{% endif %}"
-           style="border-radius: 18px;">
-        {{ message }}
-      </div>
-    {% endfor %}
+    <div class="flash-messages" style="margin-bottom: 1rem;">
+      {% for category, message in messages %}
+        <div class="{% if category=='success' %}notification is-success{% elif category=='error' %}notification is-danger{% else %}alert{% endif %}" style="border-radius:18px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
   {% endif %}
 {% endwith %}
 
 <!-- Profil Card -->
 <div class="profile-card">
-    <div class="profile-header">
+    <div class="profile-header" style="display:flex; gap:0.5rem; align-items:center;">
         <h1 style="font-size: 2rem; font-weight: 700;">@{{ user.name | replace(' ','') }}</h1>
 
-        <div style="display:flex; gap:0.5rem;">
+        <div style="display:flex; gap:0.5rem; margin-left:auto;">
             {% if is_own_profile %}
                 <button id="edit-bio-btn" class="white-btn profile-btn">Edit Bio</button>
                 <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">Post</a>
+                <a href="{{ url_for('auth.password_page') }}" class="white-btn profile-btn">Change Password</a>
             {% else %}
                 <form action="{{ url_for('main.unfollow', user_id=user.id) if current_user.is_following(user) else url_for('main.follow', user_id=user.id) }}" method="POST">
                     <button type="submit" class="white-btn profile-btn">
@@ -41,17 +32,6 @@
                     </button>
                 </form>
             {% endif %}
-
-        <div style="display: flex; gap: 0.5rem; flex-wrap: nowrap;">
-            <button id="edit-bio-btn" class="white-btn profile-btn">
-                Edit Bio
-            </button>
-            <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">
-                Post
-            </a>
-            <a href="{{ url_for('auth.password_page') }}" class="button profile-btn white-btn">
-                Change Password
-            </a>
         </div>
     </div>
 
@@ -76,7 +56,7 @@
 </div>
 
 <!-- Tweets -->
-<div class="tweets-list">
+<div class="tweets-list" style="margin-top:1rem;">
     {% if tweets %}
         {% for tweet in tweets %}
         <div class="tweet-card">
@@ -97,7 +77,7 @@
     {% endif %}
 </div>
 
-<!-- JS pour edit bio -->
+<!-- JS pour edit bio et disparition des flash messages -->
 <script>
 const editBtn = document.getElementById('edit-bio-btn');
 const cancelBtn = document.getElementById('cancel-bio-btn');
@@ -117,9 +97,12 @@ if(editBtn && cancelBtn && form && bioText){
     });
 }
 
-// Faire disparaître les flash messages après 3s
-document.querySelectorAll('.flash-messages .alert').forEach(msg=>{
-    setTimeout(()=>{ msg.style.opacity=0; setTimeout(()=>msg.remove(),500); }, 3000);
+// Faire disparaître tous les flash messages après 3s
+document.querySelectorAll('.flash-messages .alert, .notification').forEach(msg=>{
+    setTimeout(()=>{
+        msg.style.opacity=0;
+        setTimeout(()=>msg.remove(),500);
+    }, 3000);
 });
 </script>
 
