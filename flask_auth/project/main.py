@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import Tweet
+from .models import User, Tweet, followers
 from . import db
 from .forms import TweetForm
 
@@ -61,15 +61,15 @@ def delete_tweet(tweet_id):
     return redirect(url_for('main.profile'))
 
 ##ordre chrono
-@main.route('/timeline')
+@main.route('/home/timeline')
 @login_required
-def timeline():
+def home_timeline():
     # ids des comptes que je suis + moi-même
-    following_ids = [u.id for u in current_user.following] + [current_user.id]
+    following_ids = [u.id for u in current_user.followed] + [current_user.id]
+
     # tweets filtrés + triés du plus récent au plus ancien
     tweets = (Tweet.query
               .filter(Tweet.user_id.in_(following_ids))
               .order_by(Tweet.timestamp.desc())
               .all())
-    return render_template('tweets.html', tweets=tweets, sort='chrono')
-
+    return render_template('profile.html', name=current_user.name, tweets=tweets)
