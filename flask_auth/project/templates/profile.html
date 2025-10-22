@@ -63,7 +63,7 @@
     <!-- ======= BOUTONS LIKE / COMMENTAIRE / SUPPRIMER ======= -->
 
     <!-- Bouton Like -->
-    <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display: inline;">
+    <form action="{{ url_for('main.like', tweet_id=tweet.id) }}" method="POST">
     <button type="submit" 
             style="background:none; border:none; color:#e0245e; cursor:pointer; font-weight:bold;">
         ❤️ Like ({{ tweet.likes_count }})
@@ -72,7 +72,7 @@
 
     <!-- Zone de commentaire -->
     <div style="margin-top: 1rem;">
-    <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
+   <form action="{{ url_for('main.comment', tweet_id=tweet.id) }}" method="POST">
         <input type="text" name="comment_content" placeholder="Add a comment..."
                 style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd;">
         <button type="submit" 
