@@ -8,8 +8,11 @@ from .forms import TweetForm
 try:
     from .models import Like, Comment
     HAS_REACTIONS = True
-except Exception:
+    print("✅ Like et Comment models disponibles")
+except Exception as e:
     HAS_REACTIONS = False
+    print(f"❌ Like et Comment models non disponibles: {e}")
+
 
 main = Blueprint('main', __name__)
 
