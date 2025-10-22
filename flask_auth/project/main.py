@@ -73,3 +73,4 @@ def home_timeline():
               .order_by(Tweet.timestamp.desc())
               .all())
     return render_template('profile.html', name=current_user.name, tweets=tweets)
+S
