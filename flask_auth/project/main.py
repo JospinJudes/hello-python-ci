@@ -81,7 +81,8 @@ def like_tweet(tweet_id):
 @main.route('/comment/<int:tweet_id>', methods=['POST'])
 @login_required
 def comment_tweet(tweet_id):
-    content = request.form.get('content')
+    tweet = Tweet.query.get_or_404(tweet_id)
+    content = request.form.get('comment_content')
     if not content:
         flash('Comment cannot be empty.')
         return redirect(url_for('main.profile'))
