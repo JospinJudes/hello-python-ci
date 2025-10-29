@@ -66,10 +66,44 @@ def delete_tweet(tweet_id):
 def home_timeline():
     # ids des comptes que je suis + moi-même
     following_ids = [u.id for u in current_user.followed] + [current_user.id]
-
-    # tweets filtrés + triés du plus récent au plus ancien
+# tweets filtrés + triés du plus récent au plus ancien
     tweets = (Tweet.query
               .filter(Tweet.user_id.in_(following_ids))
               .order_by(Tweet.timestamp.desc())
               .all())
     return render_template('profile.html', name=current_user.name, tweets=tweets)
+
+
+
+### LIKE / UNLIKE TWEET
+@main.route('/like/<int:tweet_id>', methods=['POST'])
+@login_required
+def like_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    like = Like.query.filter_by(user_id=current_user.id, tweet_id=tweet_id).first()
+
+    if like:
+        db.session.delete(like)  # Unlike
+    else:
+        new_like = Like(user_id=current_user.id, tweet_id=tweet_id)
+        db.session.add(new_like)
+
+    db.session.commit()
+    return redirect(url_for('main.profile'))  
+
+### COMMENT TWEET
+@main.route('/comment/<int:tweet_id>', methods=['POST'])
+@login_required
+def comment_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    content = request.form.get('comment_content')
+    if not content:
+        flash('Comment cannot be empty.')
+        return redirect(url_for('main.profile'))
+
+    comment = Comment(content=content, user_id=current_user.id, tweet_id=tweet_id)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('main.profile'))
+
+    
