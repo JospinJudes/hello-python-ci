@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import Tweet, Like, Comment
+from .models import User, Tweet, followers
 from . import db
 from .forms import TweetForm
 
@@ -39,25 +39,40 @@ def tweet():
             flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
 
+
 ### DELETE TWEET
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
 @login_required
 def delete_tweet(tweet_id):
-    tweet = Tweet.query.get_or_404(tweet_id)  # Si le tweet n'existe pas on renvoie une erreur 404
-    
-    # Vérifier que le tweet appartient à l'utilisateur
+    tweet = Tweet.query.get_or_404(tweet_id) #si le tweet n'existe pas on renvoit directement l'utilisateur vers une "Page not found"
+   
+    #verifier que le tweet appartient à l'utilisateur
     if tweet.user_id != current_user.id:
         flash("You cannot delete this tweet.")
         return redirect(url_for('main.profile'))
     try:
         db.session.delete(tweet)
         db.session.commit()
-        # flash("Tweet supprimé avec succès !")
+        #flash("Tweet supprimé avec succès !")
     except Exception:
         db.session.rollback()
         flash("An error occurred during deletion.")
-        
+       
     return redirect(url_for('main.profile'))
+
+##ordre chrono
+@main.route('/home/timeline')
+@login_required
+def home_timeline():
+    # ids des comptes que je suis + moi-même
+    following_ids = [u.id for u in current_user.followed] + [current_user.id]
+# tweets filtrés + triés du plus récent au plus ancien
+    tweets = (Tweet.query
+              .filter(Tweet.user_id.in_(following_ids))
+              .order_by(Tweet.timestamp.desc())
+              .all())
+    return render_template('profile.html', name=current_user.name, tweets=tweets)
+
 
 
 ### LIKE / UNLIKE TWEET
@@ -74,8 +89,7 @@ def like_tweet(tweet_id):
         db.session.add(new_like)
 
     db.session.commit()
-    return redirect(url_for('main.profile'))
-
+    return redirect(url_for('main.profile'))  
 
 ### COMMENT TWEET
 @main.route('/comment/<int:tweet_id>', methods=['POST'])
@@ -91,3 +105,5 @@ def comment_tweet(tweet_id):
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for('main.profile'))
+
+    

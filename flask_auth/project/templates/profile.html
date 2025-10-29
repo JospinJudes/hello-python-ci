@@ -1,4 +1,4 @@
-    {% extends "base.html" %}
+{% extends "base.html" %}
 
     {% block content %}
     <h1 class="title gradient-text" style="margin-bottom: 2rem;">
@@ -17,17 +17,37 @@
     {% endif %}
     {% endwith %}
 
-    <!-- Centered Post Tweet Button -->
-    <div class="has-text-centered" style="margin-bottom: 2rem;">
-        <a href="{{ url_for('main.tweet') }}" class="navbar-button"
-        style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
-                padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
-                box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); background: linear-gradient(135deg, #ff416c, #ff4b2b);">
-            Post
-        </a>
-    </div>
+<div style="position: relative; margin-bottom: 2rem; text-align: center;">
+<!-- Bouton Post, centré-->
+<div style="text-align: center; margin-bottom: 1rem;">
+    <a href="{{ url_for('main.tweet') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+        Post
+    </a>
+</div>
 
-    <hr>
+<!-- Ligne 2 : Boutons Timeline et Ranked à gauche -->
+<div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+    <a href="{{ url_for('main.profile', sort='timeline') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+              background: {% if sort == 'timeline' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %};
+              color: {% if sort == 'timeline' %}white{% else %}#333{% endif %};">
+        Timeline
+    </a>
+
+    <a href="{{ url_for('main.profile', sort='ranked') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+              background: {% if sort == 'ranked' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %};
+              color: {% if sort == 'ranked' %}white{% else %}#333{% endif %};">
+        Ranked
+    </a>
+</div>
 
     <!-- Recent tweets -->
     {% if tweets %}
@@ -52,7 +72,7 @@
 
     <!-- Zone de commentaire -->
     <div style="margin-top: 1rem;">
-    <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
+   <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
         <input type="text" name="comment_content" placeholder="Add a comment..."
                 style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd;">
         <button type="submit" 
@@ -93,6 +113,8 @@
         </div>
         {% endfor %}
     </div>
+    
+
     {% else %}
     <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
     {% endif %}
