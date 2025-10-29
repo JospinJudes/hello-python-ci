@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="title gradient-text" style="margin-bottom: 2rem;">Home</h1>
+
+  <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <a href="{{ url_for('main.home', sort='timeline') }}"
+       class="navbar-button"
+       style="padding:0.75rem 2rem; border-radius:25px;
+              background: {{ 'linear-gradient(135deg, #ff416c, #ff4b2b)' if sort=='timeline' else '#ddd' }};
+              color: {{ 'white' if sort=='timeline' else '#333' }};">
+      Timeline
+    </a>
+    <a href="{{ url_for('main.home', sort='ranked') }}"
+       class="navbar-button"
+       style="padding:0.75rem 2rem; border-radius:25px;
+              background: {{ 'linear-gradient(135deg, #ff416c, #ff4b2b)' if sort=='ranked' else '#ddd' }};
+              color: {{ 'white' if sort=='ranked' else '#333' }};">
+      Ranked
+    </a>
+  </div>
+
+  {% if tweets %}
+    <div class="tweets-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+      {% for tweet in tweets %}
+        <div style="background:#fff; padding:1.5rem 2rem; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <strong>{{ tweet.user.name }}</strong>
+            <small style="color:gray;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+          </div>
+          <p>{{ tweet.content }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="margin-top:1rem; font-style:italic; color:gray;">No posts yet.</p>
+  {% endif %}
+{% endblock %}

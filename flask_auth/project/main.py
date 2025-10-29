@@ -11,26 +11,16 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    # page d'accueil = home
+    return redirect(url_for('main.home'))
 
-@main.route('/profile')
+@main.route('/home')
 @login_required
-def profile():
-    # Comportement par défaut préservé (aucun paramètre = "mes tweets")
-    sort = request.args.get('sort')
+def home():
+    sort = request.args.get('sort', 'timeline')
+    following_ids_q = current_user.followed.with_entities(User.id)
 
-    if sort == 'timeline':
-        # Feed = suivis + moi, tri du + récent au - récent
-        following_ids_q = current_user.followed.with_entities(User.id)
-        q = (Tweet.query
-             .filter((Tweet.user_id == current_user.id) | (Tweet.user_id.in_(following_ids_q)))
-             .order_by(Tweet.timestamp.desc()))
-        tweets = q.all()
-
-    elif sort == 'ranked':
-        # Tri par nombre de likes (SQL), puis par date
-        following_ids_q = current_user.followed.with_entities(User.id)
-
+    if sort == 'ranked':
         ranked_q = (
             db.session.query(Tweet, func.count(Like.id).label("lc"))
             .outerjoin(Like, Like.tweet_id == Tweet.id)
@@ -41,20 +31,39 @@ def profile():
             .group_by(Tweet.id)
             .order_by(func.count(Like.id).desc(), Tweet.timestamp.desc())
         )
-
-        # On ne renvoie au template que les objets Tweet
         tweets = [t for (t, _lc) in ranked_q.all()]
-
     else:
-        # Ancien comportement : uniquement mes tweets
-        tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
+        tweets = (
+            Tweet.query
+            .filter(
+                (Tweet.user_id == current_user.id) |
+                (Tweet.user_id.in_(following_ids_q))
+            )
+            .order_by(Tweet.timestamp.desc())
+            .all()
+        )
 
-    return render_template(
-        'profile.html',
-        name=current_user.name,
-        tweets=tweets,
-        sort=sort or 'me'  # utile pour surligner le bouton actif dans le template
-    )
+    return render_template('home.html', name=current_user.name, tweets=tweets, sort=sort)
+
+
+
+@main.route('/home/timeline')
+@login_required
+def home_timeline():
+    return redirect(url_for('main.home', sort='timeline'))
+
+@main.route('/home/ranked')
+@login_required
+def home_ranked():
+    return redirect(url_for('main.home', sort='ranked'))
+
+@main.route('/profile')
+@login_required
+def profile():
+    # profil: uniquement mes tweets (comportement existant)
+    tweets = current_user.tweets.order_by(Tweet.timestamp.desc()).all()
+    return render_template('profile.html', name=current_user.name, tweets=tweets)
+
 #####AJOUT POST
 @main.route('/tweet', methods=['GET', 'POST'])
 @login_required
@@ -95,21 +104,6 @@ def delete_tweet(tweet_id):
         flash("An error occurred during deletion.")
        
     return redirect(url_for('main.profile'))
-
-##ordre chrono
-@main.route('/home/timeline')
-@login_required
-def home_timeline():
-    # Redirige vers le bouton "Timeline" de profile.html
-    return redirect(url_for('main.profile', sort='timeline'))
-
-##ordre ranked
-@main.route('/home/ranked')
-@login_required
-def home_ranked():
-    # Redirige vers le bouton "Ranked" de profile.html
-    return redirect(url_for('main.profile', sort='ranked'))
-
 
 ### LIKE / UNLIKE TWEET
 @main.route('/like/<int:tweet_id>', methods=['POST'])
