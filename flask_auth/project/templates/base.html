@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My App{% endblock %}</title>
+
+    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
     <style>
-        /* Global */
+        /* ===== Global ===== */
         body {
             background: #f9f9f9;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #333;
             min-height: 100vh;
         }
+        a { text-decoration: none; }
 
-        a {
-            text-decoration: none;
-        }
-
-        /* Gradient Text */
+        /* ===== Gradient Text ===== */
         .gradient-text {
             background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
             -webkit-background-clip: text;
@@ -31,26 +32,10 @@
             animation: gradientMove 3s ease infinite;
             transition: transform 0.3s ease;
         }
+        .gradient-text:hover { transform: translateY(-3px); }
+        @keyframes gradientMove { 0% {background-position:0% 50%;} 50% {background-position:100% 50%;} 100% {background-position:0% 50%;} }
 
-        .gradient-text:hover {
-            transform: translateY(-3px);
-        }
-
-        @keyframes gradientMove {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        /* Navbar */
+        /* ===== Navbar Buttons ===== */
         .navbar-button {
             border-radius: 24px;
             font-weight: 500;
@@ -59,111 +44,52 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: #ff416c;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
             color: white;
             display: inline-flex;
             justify-content: center;
             align-items: center;
         }
-
-        .navbar-button:hover {
-            transform: translateY(-2px);
-            background: #ff4b2b;
-            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3);
-            color: white;
+        .navbar-button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px rgba(255,65,108,0.4); 
         }
+        .navbar-button.active { background: linear-gradient(45deg, #ff6a00, #ffd500); }
 
-        .navbar-button.active {
-            background: #ff6a00;
-        }
-
-        /* Hero / Content */
-        .hero-body {
+        /* ===== Search Form ===== */
+        .search-form {
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-        }
-
-        /* Flash messages */
-        .flash-messages .alert {
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            background-color: #4caf50;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: opacity 0.5s ease;
-        }
-
-        /* Buttons globaux */
-        .profile-btn {
-            font-size: 1rem;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            display: inline-flex;
-            justify-content: center;
             align-items: center;
-            line-height: 1;
-            transition: all 0.2s ease;
+            gap: 0.5rem;
         }
-
-        .profile-btn:hover {
-            transform: translateY(-2px);
+        .search-form input[type="text"] {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            width: 280px;
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
         }
-
-        .white-btn {
-            background: #fff;
-            color: #ff416c;
-            border: 1px solid #ff416c;
+        .search-form input[type="text"]:focus {
+            border-color: #ff416c;
+            box-shadow: 0 0 8px rgba(255,65,108,0.3);
         }
-
-        .white-btn:hover {
-            background: #ff416c;
-            color: #fff;
-        }
-
-        /* Bio Save & Cancel */
-        .bio-save-btn {
-            background: #48c774;
+        .search-form button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
+            border: none;
             color: white;
-            border: none;
-        }
-
-        .bio-cancel-btn {
-            background: #ccc;
-            color: #333;
-            border: none;
-        }
-
-        /* Tweet Delete */
-        .tweet-delete-btn {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            border: none;
-            background: #e74c3c;
-            color: white;
-            font-size: 0.9rem;
+            padding: 0.55rem 0.8rem;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+        }
+        .search-form button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255,65,108,0.4);
         }
 
-        .tweet-delete-btn:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Profile Card */
+        /* ===== Profile Card ===== */
         .profile-card {
             width: 100%;
             background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
@@ -177,38 +103,85 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
         .profile-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
         }
 
-        /* Tweet Cards */
+        /* ===== Profile Buttons ===== */
+        .profile-btn {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background: #ffffff;
+            color: #ff416c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-btn:hover {
+            background: #ffffff;
+            color: #ff416c;
+            box-shadow: 0 6px 15px rgba(255,65,108,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Tweet Card ===== */
         .tweet-card {
-            background-color: #fff;
+            width: 100%;
+            background: #ffffff;
+            color: #333;
+            padding: 1rem 1.5rem;
             border-radius: 1rem;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
         .tweet-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-
-        /* Tweets List */
-        .tweets-list {
+        .tweet-card .tweet-header {
             display: flex;
-            flex-direction: column; /* empile les tweets verticalement */
-            gap: 2rem;            /* espace entre chaque tweet */
-            margin-top: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .tweet-card .tweet-user {
+            font-weight: bold;
+            color: #ff416c;
+        }
+        .tweet-card .tweet-time {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .tweet-card .tweet-content {
+            margin-top: 0.25rem;
         }
 
+        /* ===== Hero / Container ===== */
+        .hero-body { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; }
+        .container { width: 100%; max-width: 900px; }
+
+        /* ===== Flash messages ===== */
+        .flash-messages .alert {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background-color: #4caf50;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: opacity 0.5s ease;
+        }
     </style>
 </head>
-
 <body>
+
     <!-- Navbar -->
     <nav style="display:flex; justify-content: space-between; align-items:center; padding:1rem; flex-wrap: wrap;">
         <div style="display:flex; gap:0.5rem;">
@@ -217,6 +190,12 @@
                 <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
             {% endif %}
         </div>
+
+        <!-- Search bar -->
+        <form action="{{ url_for('main.search_user') }}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search users...">
+            <button type="submit"><i class="fas fa-magnifying-glass"></i></button>
+        </form>
 
         <div style="display:flex; gap:0.5rem;">
             {% if current_user.is_authenticated %}
@@ -249,15 +228,12 @@
         </div>
     </section>
 
-    <!-- JS pour flash messages -->
+    <!-- JS for flash messages -->
     <script>
         document.querySelectorAll('.flash-messages .alert').forEach(msg => {
-            setTimeout(() => {
-                msg.style.opacity = 0;
-                setTimeout(() => msg.remove(), 500);
-            }, 3000);
+            setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
         });
     </script>
-</body>
 
+</body>
 </html>

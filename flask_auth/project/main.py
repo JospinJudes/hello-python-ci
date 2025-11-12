@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from .models import Tweet
 from . import db
 from .forms import TweetForm
-
+from .models import User  
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -136,3 +136,14 @@ def unfollow(user_id):
     db.session.commit()
     flash(f"You unfollowed {user.name}.", category="follow")
     return redirect(url_for('main.user_profile', user_id=user.id))
+
+
+
+@main.route("/search")
+def search_user():
+    query = request.args.get("q", "").strip()  # récupère le texte
+    users = []
+    if query:
+        # Recherche insensible à la casse sur le champ name
+        users = User.query.filter(User.name.ilike(f"%{query}%")).all()
+    return render_template("search_results.html", users=users, query=query)

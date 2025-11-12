@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="gradient-text" style="font-size:1.8rem;">Results for "{{ query }}"</h2>
+    <hr>
+
+    {% if users %}
+        <div class="tweets-list">
+        {% for user in users %}
+            <div class="profile-card">
+                <div style="display:flex; justify-content: space-between; align-items:center;">
+                    <div>
+                        <!-- Nom utilisateur en blanc -->
+                        <a href="{{ url_for('main.user_profile', user_id=user.id) }}" style="font-size:1.2rem; color: white; font-weight: bold;">
+                            {{ user.name }}
+                        </a>
+
+                        <!-- Nombre de followers et suivis -->
+                        <div class="text-muted" style="font-size:0.9rem; margin-top:0.2rem;">
+                            {{ user.followers.count() }} followers • {{ user.followed.count() }} following
+                        </div>
+                    </div>
+
+                    <!-- Boutons Follow / Unfollow -->
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_following(user) %}
+                            <form action="{{ url_for('main.unfollow', user_id=user.id) }}" method="post">
+                                <button type="submit" class="profile-btn">Unfollow</button>
+                            </form>
+                        {% elif current_user != user %}
+                            <form action="{{ url_for('main.follow', user_id=user.id) }}" method="post">
+                                <button type="submit" class="profile-btn">Follow</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if user.bio %}
+                    <p class="text-muted mt-1">{{ user.bio }}</p> <!-- mt-1 réduit l'espace -->
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}
