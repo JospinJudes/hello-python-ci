@@ -45,21 +45,7 @@
 
 </div>
 
-<!-- Boutons Timeline / Ranked -->
-<div style="display: flex; gap: 1rem; align-items: center; margin: 2rem 0;">
-    <a href="{{ url_for('main.home_timeline') }}" class="navbar-button"
-       style="padding: 0.75rem 2rem; border-radius: 25px; 
-              background: {% if sort == 'timeline' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %}; 
-              color: {% if sort == 'timeline' %}white{% else %}#333{% endif %}; font-weight:600;">
-        Timeline
-    </a>
-    <a href="{{ url_for('main.home_ranked') }}" class="navbar-button"
-       style="padding: 0.75rem 2rem; border-radius: 25px;
-              background: {% if sort == 'ranked' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %}; 
-              color: {% if sort == 'ranked' %}white{% else %}#333{% endif %}; font-weight:600;">
-        Ranked
-    </a>
-</div>
+
 
 <!-- Flash messages -->
 {% with messages = get_flashed_messages() %}
