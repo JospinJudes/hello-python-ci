@@ -4,8 +4,6 @@ from flask_login import UserMixin
 from . import db
 from datetime import datetime
 
-from flask_auth.project.models import User
-
 
 # Table d'association pour le système de follow (Un utilisateur peut suivre plusieurs autres utilisateurs,Un utilisateur peut être suivi par plusieurs autres)
 followers = db.Table(
