@@ -86,3 +86,123 @@ if(editBtn && cancelBtn && form && bioText){
 }
 </script>
 {% endblock %}
+    {% block content %}
+    <h1 class="title gradient-text" style="margin-bottom: 2rem;">
+    Welcome, {{ name }}!
+    </h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div style="background-color:#ffedd5; color:#b45309; padding:1rem; border-radius:10px;
+                    text-align:center; margin-bottom:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+<div style="position: relative; margin-bottom: 2rem; text-align: center;">
+<!-- Bouton Post, centré-->
+<div style="text-align: center; margin-bottom: 1rem;">
+    <a href="{{ url_for('main.tweet') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+        Post
+    </a>
+</div>
+
+<!-- Ligne 2 : Boutons Timeline et Ranked à gauche -->
+<div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+    <a href="{{ url_for('main.profile', sort='timeline') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+              background: {% if sort == 'timeline' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %};
+              color: {% if sort == 'timeline' %}white{% else %}#333{% endif %};">
+        Timeline
+    </a>
+
+    <a href="{{ url_for('main.profile', sort='ranked') }}" class="navbar-button"
+       style="display: inline-flex; align-items: center; justify-content: center; text-align: center;
+              padding: 0.75rem 2rem; font-weight: 600; font-size: 1rem; border-radius: 25px;
+              box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+              background: {% if sort == 'ranked' %}linear-gradient(135deg, #ff416c, #ff4b2b){% else %}#ddd{% endif %};
+              color: {% if sort == 'ranked' %}white{% else %}#333{% endif %};">
+        Ranked
+    </a>
+</div>
+
+    <!-- Recent tweets -->
+    {% if tweets %}
+    <div class="tweets-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        {% for tweet in tweets %}
+        <div style="background: #fff; padding: 1.5rem 2rem; border-radius: 18px; 
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 1200px; width: 95%; margin: 0 auto; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <strong style="font-size: 1.05rem;">{{ tweet.user.name }}</strong>
+                <small style="color: gray; font-size: 0.85rem; margin-left: 1rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+            </div>
+            <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ tweet.content }}</p>
+    <!-- ======= BOUTONS LIKE / COMMENTAIRE / SUPPRIMER ======= -->
+
+    <!-- Bouton Like -->
+    <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display: inline;">
+    <button type="submit" 
+            style="background:none; border:none; color:#e0245e; cursor:pointer; font-weight:bold;">
+        ❤️ Like ({{ tweet.likes_count }})
+    </button>
+    </form>
+
+    <!-- Zone de commentaire -->
+    <div style="margin-top: 1rem;">
+   <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
+        <input type="text" name="comment_content" placeholder="Add a comment..."
+                style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd;">
+        <button type="submit" 
+                style="padding:0.4rem 0.8rem; border-radius:8px; border:none; 
+                        background-color:#ff416c; color:white; cursor:pointer;">
+            Comment
+        </button>
+    </form>
+
+    <!-- Liste des commentaires -->
+    {% if tweet.comments %}
+        <ul style="margin-top:0.8rem; padding-left:1rem; list-style:none;">
+            {% for comment in tweet.comments %}
+                <li style="margin-bottom:0.4rem;">
+                    <strong>{{ comment.user.name }}</strong> :
+                    {{ comment.content }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+
+    <!-- ======= BOUTON SUPPRIMER (seulement si l'utilisateur est le propriétaire du tweet) ======= -->
+    {% if tweet.user_id == current_user.id %}
+    <div style="margin-top: 0.9rem;">
+        <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST"
+                onsubmit="return confirm('Are you sure you want to delete this tweet ?');"
+                style="display: inline-block;">
+            <button type="submit" class="delete-btn"
+                    style="background:#ff4b2b; color:white; border:none; padding:0.45rem 0.9rem;
+                            border-radius:8px; cursor:pointer; font-weight:600;">
+                Supprimer
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+    
+
+    {% else %}
+    <p style="margin-top: 1rem; font-style: italic; color: gray;">No tweets yet.</p>
+    {% endif %}
+
+    {% endblock %}

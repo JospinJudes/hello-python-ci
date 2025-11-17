@@ -4,6 +4,9 @@ from flask_login import UserMixin
 from . import db
 from datetime import datetime
 
+from flask_auth.project.models import User
+
+
 # Table d'association pour le système de follow (Un utilisateur peut suivre plusieurs autres utilisateurs,Un utilisateur peut être suivi par plusieurs autres)
 followers = db.Table(
     'followers',
@@ -33,22 +36,45 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             self.followed.append(user)
 
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
 
-    def is_following(self, user): #verifie si self suit user
-        return self.followed.filter(
-            followers.c.followed_id == user.id
-        ).count() > 0
-    
-    def delete_follower(self,user):
-        if user in self.followers:
-            self.followers.remove(user)
+    user = db.relationship('User', backref='likes', lazy=True)
 
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
 
-#post
+    user = db.relationship('User', backref='comments', lazy=True)
+
+
+# ==========================
+# Méthodes de follow / unfollow (à garder)
+# ==========================
+
+def unfollow(self, user):
+    if self.is_following(user):
+        self.followed.remove(user)
+
+def is_following(self, user):  # Vérifie si self suit user
+    return self.followed.filter(
+        followers.c.followed_id == user.id
+    ).count() > 0
+
+def delete_follower(self, user):
+    if user in self.followers:
+        self.followers.remove(user)
+
+
+# ==========================
+# Classe Tweet (avec likes/comments)
+# ==========================
+
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(280))
@@ -56,7 +82,6 @@ class Tweet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='tweets')
 
-from flask_auth.project.models import User
 
 def test_signup_duplicate_email_is_rejected_without_creating_new_user(app, client):
     # 1) Création initiale
@@ -80,3 +105,12 @@ def test_signup_duplicate_email_is_rejected_without_creating_new_user(app, clien
     # Invariant BDD : un seul utilisateur avec cet email
     with app.app_context():
         assert User.query.filter_by(email="bob@example.com").count() == 1
+    likes = db.relationship('Like', backref='tweet', lazy=True)
+    comments = db.relationship('Comment', backref='tweet', lazy=True)
+
+    @property
+    def likes_count(self):
+        return len(self.likes)
+
+
+
