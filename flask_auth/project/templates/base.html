@@ -28,12 +28,9 @@
             -webkit-text-fill-color: transparent;
             display: inline-block;
             font-weight: bold;
-            background-size: 300% 300%;
-            animation: gradientMove 3s ease infinite;
             transition: transform 0.3s ease;
         }
-        .gradient-text:hover { transform: translateY(-3px); }
-        @keyframes gradientMove { 0% {background-position:0% 50%;} 50% {background-position:100% 50%;} 100% {background-position:0% 50%;} }
+        .gradient-text:hover { transform: translateY(-2px); }
 
         /* ===== Navbar Buttons ===== */
         .navbar-button {
@@ -65,7 +62,7 @@
         .search-form input[type="text"] {
             padding: 0.6rem 1rem;
             font-size: 1rem;
-            width: 280px;
+            width: 300px;
             border: 2px solid #ccc;
             border-radius: 25px;
             outline: none;
@@ -91,53 +88,75 @@
 
         /* ===== Profile Card ===== */
         .profile-card {
-            width: 100%;
-            background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
-            color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .profile-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        /* ===== Profile Buttons ===== */
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        } 
+
+
+        /* ===== Profile / Action Buttons ===== */
+       .profile-btn {
+    position: relative;
+    border-radius: 25px;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    border: 2px solid #ff416c;
+    background: #fff; /* Fond blanc */
+    color: #fff; /* fallback */
+    overflow: hidden;
+    transition: all 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Texte dégradé via pseudo-élément */
         .profile-btn {
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            border-radius: 30px;
-            border: 2px solid transparent;
-            background: #ffffff;
-            color: #ff416c;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        border-radius: 25px;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        cursor: pointer;
+        border: 2px solid #ff416c; /* bordure rouge */
+        background: #fff; /* fond blanc */
+        color: #ff416c; /* texte rouge */
+        transition: all 0.3s ease, transform 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         }
+
         .profile-btn:hover {
-            background: #ffffff;
-            color: #ff416c;
-            box-shadow: 0 6px 15px rgba(255,65,108,0.3);
+            background: #ff416c; /* fond rouge au hover */
+            color: #fff; /* texte blanc au hover */
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,65,108,0.3);
+        }
+
+        .follow-btn, .unfollow-btn, .save-btn, .cancel-btn {
+            @extend .profile-btn;
         }
 
         /* ===== Tweet Card ===== */
         .tweet-card {
             width: 100%;
-            background: #ffffff;
+            background: #fff;
             color: #333;
             padding: 1rem 1.5rem;
-            border-radius: 1rem;
+            border-radius: 12px;
             margin-bottom: 1rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -146,23 +165,40 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        .tweet-card .tweet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
+
+        /* ===== Tweet Buttons ===== */
+        .like-btn {
+            padding: 0.3rem 0.7rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: 2px solid #e0245e;
+            background: transparent;
+            color: #e0245e;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .tweet-card .tweet-user {
-            font-weight: bold;
-            color: #ff416c;
+        .like-btn.liked {
+            background: #e0245e;
+            color: #fff;
+            border: none;
         }
-        .tweet-card .tweet-time {
-            font-size: 0.85rem;
-            color: #666;
+        .like-btn:hover { filter: brightness(1.1); }
+
+        .delete-btn {
+            padding: 0.3rem 0.7rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            background: #c00;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .tweet-card .tweet-content {
-            margin-top: 0.25rem;
-        }
+        .delete-btn:hover { filter: brightness(1.2); }
+
+        .comment-input { flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd; }
+        .comment-btn { padding:0.4rem 0.8rem; border-radius:8px; border:none; background-color:#ff416c; color:white; cursor:pointer; transition:0.3s; }
+        .comment-btn:hover { filter: brightness(1.1); }
 
         /* ===== Hero / Container ===== */
         .hero-body { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; }
@@ -182,7 +218,7 @@
 </head>
 <body>
 
-        <!-- Navbar -->
+    <!-- Navbar -->
     <nav style="display:flex; align-items:center; padding:1rem; flex-wrap: wrap; gap:1rem; justify-content: space-between;">
         <!-- Left buttons -->
         <div style="display:flex; gap:0.5rem; flex:1;">
@@ -210,7 +246,7 @@
             {% endif %}
         </div>
     </nav>
-    
+
     <!-- Main Section -->
     <section class="hero">
         <div class="hero-body">

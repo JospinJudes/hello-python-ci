@@ -11,14 +11,16 @@
 
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:flex-end;">
             {% if is_own_profile %}
-                <button id="edit-bio-btn" class="white-btn profile-btn">Edit Bio</button>
-                <a href="{{ url_for('main.tweet') }}" class="white-btn profile-btn">Post</a>
-                <a href="{{ url_for('auth.password_page') }}" class="white-btn profile-btn">Change Password</a>
+                <button id="edit-bio-btn" class="profile-btn">Edit Bio</button>
+                <a href="{{ url_for('main.tweet') }}" class="profile-btn">Post</a>
+                <a href="{{ url_for('auth.password_page') }}" class="profile-btn">Change Password</a>
             {% else %}
                 <form action="{{ url_for('main.unfollow', user_id=user.id) if current_user.is_following(user) else url_for('main.follow', user_id=user.id) }}" method="POST" style="margin:0;">
-                    <button type="submit" class="white-btn profile-btn">
-                        {% if current_user.is_following(user) %}Unfollow{% else %}Follow{% endif %}
-                    </button>
+                    {% if current_user.is_following(user) %}
+                        <button type="submit" class="profile-btn unfollow-btn">Unfollow</button>
+                    {% else %}
+                        <button type="submit" class="profile-btn follow-btn">Follow</button>
+                    {% endif %}
                 </form>
             {% endif %}
         </div>
@@ -28,11 +30,11 @@
     <p id="bio-text" class="bio-text" style="margin-top:1rem;">{{ user.bio or "This user hasn’t written a bio yet." }}</p>
 
     {% if is_own_profile %}
-    <form id="edit-bio-form" class="bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display:none; margin-top:1rem;">
+    <form id="edit-bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display:none; margin-top:1rem;">
         <textarea name="bio" rows="4" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:1px solid #ccc; font-size:1rem; resize:none;">{{ user.bio or '' }}</textarea>
         <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-            <button type="submit" class="bio-save-btn profile-btn">Save</button>
-            <button type="button" id="cancel-bio-btn" class="bio-cancel-btn profile-btn">Cancel</button>
+            <button type="submit" class="profile-btn save-btn">Save</button>
+            <button type="button" id="cancel-bio-btn" class="profile-btn cancel-btn">Cancel</button>
         </div>
     </form>
     {% endif %}
@@ -45,53 +47,36 @@
 
 </div>
 
-
-
-<!-- Flash messages -->
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    {% for message in messages %}
-    <div style="background-color:#ffedd5; color:#b45309; padding:1rem; border-radius:10px;
-                text-align:center; margin-bottom:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-        {{ message }}
-    </div>
-    {% endfor %}
-{% endif %}
-{% endwith %}
-
 <!-- Liste des tweets -->
 <div class="tweets-list" style="display:flex; flex-direction:column; gap:1.5rem;">
     {% if tweets %}
         {% for tweet in tweets %}
-        <div class="tweet-card" style="background:#fff; padding:1rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div class="tweet-card">
+            <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div>
                     <strong>@{{ tweet.user.name }}</strong>
                     <small style="color:#888; margin-left:0.5rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
                 </div>
                 {% if is_own_profile and tweet.user_id == current_user.id %}
                     <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" style="margin:0;">
-                        <button type="submit" style="background:none; border:none; color:#c00; cursor:pointer;">Delete</button>
+                        <button type="submit" class="delete-btn">Delete</button>
                     </form>
                 {% endif %}
             </div>
-            <p style="margin-top:0.5rem;">{{ tweet.content }}</p>
+
+            <p class="tweet-content" style="margin-top:0.5rem;">{{ tweet.content }}</p>
 
             <!-- Like -->
+            {% set liked = tweet.id in current_user.liked_tweet_ids %}
             <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display:inline;">
-                <button type="submit" style="background:none; border:none; color:#e0245e; cursor:pointer;">
-                    ❤️ Like ({{ tweet.likes_count }})
-                </button>
+                <button type="submit" class="like-btn {% if liked %}liked{% endif %}">❤️ Like ({{ tweet.likes_count }})</button>
             </form>
 
             <!-- Comment -->
             <div style="margin-top:0.5rem;">
                 <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
-                    <input type="text" name="comment_content" placeholder="Add a comment..."
-                           style="flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd;">
-                    <button type="submit" style="padding:0.4rem 0.8rem; border-radius:8px; border:none; background-color:#ff416c; color:white; cursor:pointer;">
-                        Comment
-                    </button>
+                    <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
+                    <button type="submit" class="comment-btn">Comment</button>
                 </form>
 
                 {% if tweet.comments %}
@@ -104,7 +89,6 @@
                 </ul>
                 {% endif %}
             </div>
-
         </div>
         {% endfor %}
     {% else %}
