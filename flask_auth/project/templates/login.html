@@ -1,106 +1,110 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <div class="box has-text-centered"
-         style="
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 28px;
-            padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-         ">
-         
-        <h3 class="title gradient-text" style="font-size: 2.4rem; margin-bottom: 1.8rem;">Login</h3>
+<div class="login-container" style="display:flex; justify-content:center; align-items:center; min-height:100vh; padding:1rem;">
 
+    <div class="login-box" 
+         style="
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            max-width: 420px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+         ">
+
+        <h2 class="title gradient-text" style="font-size:2.5rem; text-align:center; margin-bottom:2rem; font-weight:800;">
+            Login
+        </h2>
+
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages(category_filter=['login']) %}
         {% if messages %}
-            <div class="notification is-danger" style="border-radius: 18px; background: rgba(255, 37, 37, 0.75); color: white; margin-bottom: 1rem;">
+            <div class="notification is-danger" style="
+                border-radius: 12px; 
+                background: rgba(255, 37, 37, 0.85); 
+                color:white; 
+                text-align:center;
+                padding:0.8rem 1rem;
+                margin-bottom:1.5rem;
+                font-weight:600;
+            ">
                 {{ messages[0] }}
             </div>
         {% endif %}
         {% endwith %}
 
-        <form method="POST" action="/login" novalidate>
+        <form method="POST" action="/login" novalidate style="display:flex; flex-direction:column; gap:1rem;">
             <!-- Email -->
-            <div class="field" style="margin-bottom: 1.2rem;">
-                <div class="control has-icons-left">
-                    <input class="input is-medium" 
-                           type="email" 
-                           name="email" 
-                           placeholder="Enter your email" 
-                           required
-                           style="
-                               border-radius: 18px; 
-                               padding: 1rem; 
-                               font-size: 1rem;
-                               background: rgba(255,255,255,0.9); 
-                               color: #333; 
-                               border: 1px solid #ddd;
-                           ">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-envelope" style="color: #666;"></i>
-                    </span>
-                </div>
-            </div>
+            <input class="input is-medium" 
+                   type="email" 
+                   name="email" 
+                   placeholder="Enter your email" 
+                   required
+                   style="
+                       border-radius: 18px;
+                       padding: 1rem;
+                       font-size: 1rem;
+                       background: rgba(250,250,250,0.95);
+                       border: 1px solid #ddd;
+                       transition: 0.3s;
+                   "
+                   onfocus="this.style.borderColor='#ff416c'; this.style.boxShadow='0 0 8px rgba(255,65,108,0.5)';" 
+                   onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+            >
 
             <!-- Password -->
-            <div class="field" style="margin-bottom: 1.2rem;">
-                <div class="control has-icons-left">
-                    <input class="input is-medium" 
-                           type="password" 
-                           name="password" 
-                           placeholder="Enter your password" 
-                           required
-                           style="
-                               border-radius: 18px; 
-                               padding: 1rem; 
-                               font-size: 1rem;
-                               background: rgba(255,255,255,0.9); 
-                               color: #333; 
-                               border: 1px solid #ddd;
-                           ">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock" style="color: #666;"></i>
-                    </span>
-                </div>
-            </div>
+            <input class="input is-medium" 
+                   type="password" 
+                   name="password" 
+                   placeholder="Enter your password" 
+                   required
+                   style="
+                       border-radius: 18px;
+                       padding: 1rem;
+                       font-size: 1rem;
+                       background: rgba(250,250,250,0.95);
+                       border: 1px solid #ddd;
+                       transition: 0.3s;
+                   "
+                   onfocus="this.style.borderColor='#ff416c'; this.style.boxShadow='0 0 8px rgba(255,65,108,0.5)';" 
+                   onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+            >
 
             <!-- Remember me -->
-            <div class="field has-text-left" style="margin-top: 0.5rem;">
-                <label class="checkbox" style="color: #444; font-size: 0.9rem;">
-                    <input type="checkbox" style="accent-color: #ff416c;"> Remember me
-                </label>
-            </div>
+            <label class="checkbox" style="color:#444; font-size:0.9rem;">
+                <input type="checkbox" style="accent-color:#ff416c;"> Remember me
+            </label>
 
-            <!-- Submit button -->
-            <button class="button is-medium is-fullwidth"
-                    style="
-                        margin-top: 1.5rem; 
-                        border-radius: 22px; 
-                        padding: 1rem; 
-                        font-size: 1.1rem;
-                        background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
-                        border: none; 
-                        color: white; 
-                        font-weight: bold;
-                        box-shadow: 0 4px 14px rgba(255, 75, 43, 0.3); 
-                        transition: 0.3s;
-                    ">
+            <!-- Submit -->
+            <button type="submit" class="button is-medium is-fullwidth" style="
+                    margin-top:1rem;
+                    border-radius:22px;
+                    padding:1rem;
+                    font-size:1.1rem;
+                    font-weight:bold;
+                    background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
+                    border:none;
+                    color:white;
+                    box-shadow:0 6px 18px rgba(255,75,43,0.35);
+                    cursor:pointer;
+                    transition:0.3s;
+                "
+                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 8px 22px rgba(255,75,43,0.45)';"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 18px rgba(255,75,43,0.35)';">
                 Login
             </button>
         </form>
 
         <!-- Extra links -->
-        <p class="has-text-grey" style="margin-top: 2rem; font-size: 0.95rem; color: #333 !important;">
+        <p class="has-text-centered" style="margin-top:2rem; font-size:0.95rem; color:#333;">
             Don’t have an account yet?  
-            <a href="{{ url_for('auth.signup') }}" class="gradient-text"><strong>Sign up here</strong></a>
+            <a href="{{ url_for('auth.signup') }}" class="gradient-text" style="font-weight:600;">Sign up here</a>
         </p>
+
     </div>
 </div>
-
-<!-- Font Awesome for icons -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 {% endblock %}
