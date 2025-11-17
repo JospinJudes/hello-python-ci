@@ -5,14 +5,13 @@ from flask_login import login_required, current_user
 from .models import User, Tweet, followers, Like, Comment
 from . import db
 from .forms import TweetForm
-from .models import User  
-from sqlalchemy import func 
+from sqlalchemy import func
 
 main = Blueprint('main', __name__)
 
+# -------------------- HOME / INDEX --------------------
 @main.route('/')
 def index():
-    # page d'accueil = home
     return redirect(url_for('main.home'))
 
 @main.route('/home')
@@ -46,8 +45,6 @@ def home():
 
     return render_template('home.html', name=current_user.name, tweets=tweets, sort=sort)
 
-
-
 @main.route('/home/timeline')
 @login_required
 def home_timeline():
@@ -58,7 +55,7 @@ def home_timeline():
 def home_ranked():
     return redirect(url_for('main.home', sort='ranked'))
 
-
+# -------------------- PROFILE --------------------
 @main.route('/profile')
 @login_required
 def profile():
@@ -71,9 +68,8 @@ def profile():
         tweets=tweets,
         following_count=following_count,
         followers_count=followers_count,
-        is_own_profile=True  # on indique que c’est ton profil
+        is_own_profile=True
     )
-
 
 @main.route('/profile/<int:user_id>')
 @login_required
@@ -88,16 +84,10 @@ def user_profile(user_id):
         tweets=tweets,
         following_count=following_count,
         followers_count=followers_count,
-        is_own_profile=(user.id == current_user.id)  # ✅ comparaison directe
+        is_own_profile=(user.id == current_user.id)
     )
 
-
-
-
-
-
-
-#####AJOUT POST
+# -------------------- TWEETS --------------------
 @main.route('/tweet', methods=['GET', 'POST'])
 @login_required
 def tweet():
@@ -109,7 +99,7 @@ def tweet():
             db.session.commit()
             flash('Tweet posted!')
             return redirect(url_for('main.profile'))
-        except Exception as e:
+        except Exception:
             db.session.rollback()
             flash("An error occurred during publication. Please try again.")
     else:
@@ -117,45 +107,35 @@ def tweet():
             flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
 
-
-### DELETE TWEET
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
 @login_required
 def delete_tweet(tweet_id):
-    tweet = Tweet.query.get_or_404(tweet_id) #si le tweet n'existe pas on renvoit directement l'utilisateur vers une "Page not found"
-   
-    #verifier que le tweet appartient à l'utilisateur
+    tweet = Tweet.query.get_or_404(tweet_id)
     if tweet.user_id != current_user.id:
         flash("You cannot delete this tweet.")
         return redirect(url_for('main.profile'))
     try:
         db.session.delete(tweet)
         db.session.commit()
-        #flash("Tweet supprimé avec succès !")
     except Exception:
         db.session.rollback()
         flash("An error occurred during deletion.")
-        
     return redirect(url_for('main.profile'))
 
-
+# -------------------- EDIT BIO --------------------
 @main.route('/profile/edit_bio', methods=['POST'])
 @login_required
 def edit_bio():
     new_bio = request.form.get('bio', '').strip()
-
     if len(new_bio) > 300:
         flash("Bio is too long (max 300 characters)", category='bio')
     else:
         current_user.bio = new_bio
         db.session.commit()
         flash("Your bio has been updated!", category="bio")
-
     return redirect(url_for('main.profile'))
 
-
-
-##### FOLLOW / UNFOLLOW #####
+# -------------------- FOLLOW / UNFOLLOW --------------------
 @main.route('/follow/<int:user_id>', methods=['POST'])
 @login_required
 def follow(user_id):
@@ -167,7 +147,6 @@ def follow(user_id):
     db.session.commit()
     flash(f"You are now following {user.name}!", category="follow")
     return redirect(url_for('main.user_profile', user_id=user.id))
-
 
 @main.route('/unfollow/<int:user_id>', methods=['POST'])
 @login_required
@@ -181,13 +160,41 @@ def unfollow(user_id):
     flash(f"You unfollowed {user.name}.", category="follow")
     return redirect(url_for('main.user_profile', user_id=user.id))
 
-
-
+# -------------------- SEARCH --------------------
 @main.route("/search")
 def search_user():
-    query = request.args.get("q", "").strip()  # récupère le texte
+    query = request.args.get("q", "").strip()
     users = []
     if query:
-        # Recherche insensible à la casse sur le champ name
         users = User.query.filter(User.name.ilike(f"%{query}%")).all()
     return render_template("search_results.html", users=users, query=query)
+
+# -------------------- LIKE --------------------
+@main.route('/like/<int:tweet_id>', methods=['POST'])
+@login_required
+def like_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    if current_user.has_liked(tweet):
+        like = Like.query.filter_by(user_id=current_user.id, tweet_id=tweet.id).first()
+        if like:
+            db.session.delete(like)
+    else:
+        new_like = Like(user_id=current_user.id, tweet_id=tweet.id)
+        db.session.add(new_like)
+    db.session.commit()
+    return redirect(request.referrer or url_for('main.profile'))
+
+# -------------------- COMMENT --------------------
+@main.route('/comment/<int:tweet_id>', methods=['POST'])
+@login_required
+def comment_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+    content = request.form.get('comment_content', '').strip()
+    if content:
+        new_comment = Comment(user_id=current_user.id, tweet_id=tweet.id, content=content)
+        db.session.add(new_comment)
+        db.session.commit()
+        flash("Comment added!")
+    else:
+        flash("Comment cannot be empty.")
+    return redirect(request.referrer or url_for('main.profile'))
