@@ -12,242 +12,188 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <style>
-        /* ===== Global ===== */
         body {
             background: #f9f9f9;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #333;
+            margin: 0;
             min-height: 100vh;
         }
         a { text-decoration: none; }
 
-        /* ===== Gradient Text ===== */
+        /* Gradient Text */
         .gradient-text {
             background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
             font-weight: bold;
-            transition: transform 0.3s ease;
         }
-        .gradient-text:hover { transform: translateY(-2px); }
 
-        /* ===== Navbar Buttons ===== */
+        /* Navbar buttons */
         .navbar-button {
             border-radius: 24px;
             font-weight: 500;
             font-size: 1rem;
-            padding: 0.6rem 1.2rem;
+            padding: 0.6rem 1rem;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
             background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
             color: white;
             display: inline-flex;
-            justify-content: center;
             align-items: center;
-        }
-        .navbar-button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(255,65,108,0.4); 
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         .navbar-button.active { background: linear-gradient(45deg, #ff6a00, #ffd500); }
+        .navbar-button:hover { transform: translateY(-2px); box-shadow:0 6px 15px rgba(255,65,108,0.4); }
 
-        /* ===== Search Form ===== */
-        .search-form {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        /* Search Form */
+        .search-form { display:flex; gap:0.5rem; }
         .search-form input[type="text"] {
-            padding: 0.6rem 1rem;
-            font-size: 1rem;
-            width: 300px;
-            border: 2px solid #ccc;
-            border-radius: 25px;
-            outline: none;
-            transition: all 0.3s ease;
+            border-radius:25px;
+            padding:0.6rem 1rem;
+            border:2px solid #ccc;
+            outline:none;
+            transition:0.3s;
         }
         .search-form input[type="text"]:focus {
-            border-color: #ff416c;
-            box-shadow: 0 0 8px rgba(255,65,108,0.3);
+            border-color:#ff416c;
+            box-shadow:0 0 8px rgba(255,65,108,0.3);
         }
         .search-form button {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
-            border: none;
-            color: white;
-            padding: 0.55rem 0.8rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            border:none;
+            background:linear-gradient(45deg,#ff416c,#ff4b2b,#ff6a00);
+            color:white;
+            border-radius:50%;
+            padding:0.55rem 0.8rem;
+            cursor:pointer;
+            transition:0.3s;
         }
-        .search-form button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(255,65,108,0.4);
-        }
+        .search-form button:hover { transform:scale(1.1); box-shadow:0 4px 12px rgba(255,65,108,0.4); }
 
-        /* ===== Profile Card ===== */
-        .profile-card {
-        width: 100%;
-        background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6a00);
-        color: white;
-        padding: 2rem;
-        border-radius: 1rem;
-        margin-bottom: 2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .profile-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-        } 
-
-
-        /* ===== Profile / Action Buttons ===== */
-       .profile-btn {
-    position: relative;
-    border-radius: 25px;
-    font-weight: 600;
-    padding: 0.5rem 1.5rem;
-    cursor: pointer;
-    border: 2px solid #ff416c;
-    background: #fff; /* Fond blanc */
-    color: #fff; /* fallback */
-    overflow: hidden;
-    transition: all 0.3s ease, transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Texte dégradé via pseudo-élément */
+        /* Profile Buttons */
         .profile-btn {
-        border-radius: 25px;
-        font-weight: 600;
-        padding: 0.5rem 1.5rem;
-        cursor: pointer;
-        border: 2px solid #ff416c; /* bordure rouge */
-        background: #fff; /* fond blanc */
-        color: #ff416c; /* texte rouge */
-        transition: all 0.3s ease, transform 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+            border-radius:25px;
+            font-weight:600;
+            padding:0.5rem 1.5rem;
+            border:2px solid #ff416c;
+            background:#fff;
+            color:#ff416c;
+            cursor:pointer;
+            transition:all 0.3s ease, transform 0.2s ease;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
         }
-
         .profile-btn:hover {
-            background: #ff416c; /* fond rouge au hover */
-            color: #fff; /* texte blanc au hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,65,108,0.3);
+            background:#ff416c;
+            color:white;
+            transform:translateY(-2px);
+            box-shadow:0 4px 12px rgba(255,65,108,0.3);
         }
 
-        .follow-btn, .unfollow-btn, .save-btn, .cancel-btn {
-            @extend .profile-btn;
+        /* Profile Card */
+        .profile-card {
+            width:100%;
+            background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
+            color:white;
+            padding:2rem;
+            border-radius:1rem;
+            margin-bottom:2rem;
+            display:flex;
+            flex-direction:column;
+            gap:1rem;
+            box-shadow:0 6px 20px rgba(0,0,0,0.15);
+            transition:0.2s ease;
+        }
+        .profile-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 10px 25px rgba(0,0,0,0.25);
         }
 
-        /* ===== Tweet Card ===== */
+        /* Tweet Card */
         .tweet-card {
-            width: 100%;
-            background: #fff;
-            color: #333;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width:100%;
+            background:#fff;
+            color:#333;
+            padding:1rem 1.5rem;
+            border-radius:12px;
+            margin-bottom:1rem;
+            box-shadow:0 6px 20px rgba(0,0,0,0.1);
+            transition:0.2s ease;
         }
         .tweet-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
         }
 
-        /* ===== Tweet Buttons ===== */
         .like-btn {
-            padding: 0.3rem 0.7rem;
-            border-radius: 10px;
-            font-weight: 600;
-            border: 2px solid #e0245e;
-            background: transparent;
-            color: #e0245e;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding:0.3rem 0.7rem;
+            border-radius:10px;
+            font-weight:600;
+            border:2px solid #e0245e;
+            background:transparent;
+            color:#e0245e;
+            cursor:pointer;
+            transition:0.3s;
         }
-        .like-btn.liked {
-            background: #e0245e;
-            color: #fff;
-            border: none;
+        .like-btn.liked { background:#e0245e; color:white; border:none; }
+        .like-btn:hover { filter:brightness(1.1); }
+
+        .comment-btn {
+            padding:0.3rem 0.7rem;
+            border-radius:10px;
+            font-weight:600;
+            border:none;
+            background:#ff416c;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
         }
-        .like-btn:hover { filter: brightness(1.1); }
+        .comment-btn:hover { filter:brightness(1.1); }
 
         .delete-btn {
-            padding: 0.3rem 0.7rem;
-            border-radius: 10px;
-            font-weight: 600;
-            border: none;
-            background: #c00;
-            color: #fff;
-            cursor: pointer;
-            transition: 0.3s;
+            padding:0.3rem 0.7rem;
+            border-radius:10px;
+            font-weight:600;
+            border:none;
+            background:#c00;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
         }
-        .delete-btn:hover { filter: brightness(1.2); }
+        .delete-btn:hover { filter:brightness(1.2); }
 
-        .comment-input { flex:1; padding:0.4rem; border-radius:8px; border:1px solid #ddd; }
-        .comment-btn { padding:0.4rem 0.8rem; border-radius:8px; border:none; background-color:#ff416c; color:white; cursor:pointer; transition:0.3s; }
-        .comment-btn:hover { filter: brightness(1.1); }
+        /* Layout Helpers */
+        .home-tabs { display:flex; gap:1rem; margin-bottom:1rem; }
+        .home-separator { height:1rem; }
+        .tweets-container { display:flex; flex-direction:column; gap:1.5rem; }
+        .hero-body { display:flex; justify-content:center; align-items:flex-start; padding:2rem 0; }
+        .container { width:100%; max-width:900px; }
 
-        /* ===== Hero / Container ===== */
-        .hero-body { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; }
-        .container { width: 100%; max-width: 900px; }
-
-        /* ===== Flash messages ===== */
+        /* Flash messages */
         .flash-messages .alert {
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            background-color: #4caf50;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            transition: opacity 0.5s ease;
+            border-radius:0.5rem;
+            padding:0.75rem 1rem;
+            margin-bottom:0.5rem;
+            background-color:#4caf50;
+            color:white;
+            box-shadow:0 2px 6px rgba(0,0,0,0.1);
+            transition:opacity 0.5s ease;
         }
-
-
-
-        .home-tabs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    }
-
-    .home-separator {
-        height: 1rem; /* ← augmente si tu veux plus d’espace */
-    }
-
-    .tweets-container {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
     </style>
 </head>
 <body>
 
     <!-- Navbar -->
     <nav style="display:flex; align-items:center; padding:1rem; flex-wrap: wrap; gap:1rem; justify-content: space-between;">
-        <!-- Left buttons -->
         <div style="display:flex; gap:0.5rem; flex:1;">
-            <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
+            <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}"><i class="fas fa-house"></i></a>
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
+            <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}"><i class="fas fa-user"></i></a>
             {% endif %}
         </div>
 
-        <!-- Centered Search bar -->
         <div style="flex:2; display:flex; justify-content:center;">
             <form action="{{ url_for('main.search_user') }}" method="get" class="search-form">
                 <input type="text" name="q" placeholder="Search users..." style="width: 300px;">
@@ -255,13 +201,12 @@
             </form>
         </div>
 
-        <!-- Right buttons -->
         <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.logout') }}" class="navbar-button">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-sign-out-alt"></i></a>
             {% else %}
-                <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}">Login</a>
-                <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}">Sign Up</a>
+            <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}"><i class="fas fa-sign-in-alt"></i></a>
+            <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}"><i class="fas fa-user-plus"></i></a>
             {% endif %}
         </div>
     </nav>
@@ -270,29 +215,73 @@
     <section class="hero">
         <div class="hero-body">
             <div class="container">
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
                   {% if messages %}
-                    <div class="flash-messages">
+                  <div class="flash-messages">
                       {% for category, message in messages %}
-                        <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
+                      <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
                           {{ message }}
-                        </div>
+                      </div>
                       {% endfor %}
-                    </div>
+                  </div>
                   {% endif %}
                 {% endwith %}
 
-                {% block content %}{% endblock %}
+                {% block content %}
+                <!-- Tabs -->
+                <div class="home-tabs">
+                    <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}"><i class="fas fa-house"></i></a>
+                    <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}"><i class="fas fa-user"></i></a>
+                </div>
+                <div class="home-separator"></div>
+
+                <div class="tweets-container">
+                    <!-- Example Tweet -->
+                    <div class="tweet-card">
+                        <div style="display:flex; gap:1rem;">
+                            <div style="font-size:2rem; color:#ff416c;"><i class="fas fa-user-circle"></i></div>
+                            <div>
+                                <strong>Jane Doe</strong> <span style="color:#888;">@janedoe · 2h</span>
+                                <p style="margin-top:0.5rem;">Exploring nature! 🌲🏔️ <span class="gradient-text">#nature</span> <span class="gradient-text">#hiking</span></p>
+                                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                                    <button class="like-btn"><i class="fas fa-heart"></i> 24</button>
+                                    <button class="comment-btn"><i class="fas fa-comment"></i> 5</button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example Profile Card -->
+                    <div class="profile-card">
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-size:3rem;"><i class="fas fa-user-circle"></i></div>
+                            <div>
+                                <h3 style="margin:0;">John Smith</h3>
+                                <span style="color:#ffd500;">@johnsmith</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            <button class="profile-btn follow-btn">Follow</button>
+                            <button class="profile-btn save-btn">Message</button>
+                        </div>
+                        <div style="margin-top:1rem; display:flex; gap:1rem; color:white;">
+                            <span><i class="fas fa-user-friends"></i> 120 Followers</span>
+                            <span><i class="fas fa-star"></i> 75 Likes</span>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+
             </div>
         </div>
     </section>
 
-    <!-- JS for flash messages -->
     <script>
         document.querySelectorAll('.flash-messages .alert').forEach(msg => {
             setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
         });
     </script>
-
 </body>
 </html>
