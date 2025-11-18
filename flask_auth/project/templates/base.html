@@ -1,268 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My App{% endblock %}</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}My App{% endblock %}</title>
 
-    <!-- Bulma CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<!-- Bulma CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <style>
-        body {
-            background: #f9f9f9;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            min-height: 100vh;
-        }
-        a { text-decoration: none; }
+<style>
+body {
+    background: #f9f9f9;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    min-height: 100vh;
+}
+a { text-decoration: none; }
 
-        /* Gradient Text */
-        .gradient-text {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
 
-        /* Navbar buttons */
-        .navbar-button {
-            border-radius: 24px;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 0.6rem 1rem;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        .navbar-button.active { 
-            background: linear-gradient(45deg, #ff6a00, #ffd500); 
-        }
-        .navbar-button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(255,65,108,0.4); 
-        }
+/* Navbar buttons */
+.navbar-button {
+    border-radius: 24px;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.navbar-button.active { 
+    background: linear-gradient(45deg, #ff6a00, #ffd500); 
+}
+.navbar-button:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 15px rgba(255,65,108,0.4); 
+}
 
-        /* Search Form */
-        .search-form { 
-            display: flex; 
-            gap: 0.5rem; 
-            width: 100%;
-        }
-        .search-form input[type="text"] {
-            flex: 1;
-            border-radius: 25px;
-            padding: 0.6rem 1rem;
-            border: 2px solid #ccc;
-            outline: none;
-            transition: 0.3s;
-        }
-        .search-form input[type="text"]:focus {
-            border-color: #ff416c;
-            box-shadow: 0 0 8px rgba(255,65,108,0.3);
-        }
+/* Search Form */
+.search-form { 
+    display: flex; 
+    gap: 0.5rem; 
+    width: 100%;
+}
+.search-form input[type="text"] {
+    flex: 1;
+    border-radius: 25px;
+    padding: 0.6rem 1rem;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: 0.3s;
+}
+.search-form input[type="text"]:focus {
+    border-color: #ff416c;
+    box-shadow: 0 0 8px rgba(255,65,108,0.3);
+}
 
-        /* Profile Buttons */
-        .profile-btn {
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.2;
-            letter-spacing: 0.5px;
-            padding: 0.5rem 1.5rem;
-            border: 2px solid #ff416c;
-            background: #fff;
-            color: #ff416c;
-            cursor: pointer;
-            transition: all 0.3s ease, transform 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .profile-btn:hover {
-            background:#ff416c;
-            color:white;
-            transform:translateY(-2px);
-            box-shadow:0 4px 12px rgba(255,65,108,0.3);
-        }
+/* Profile Card */
+.profile-card {
+    width:100%;
+    background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
+    color:white;
+    padding:2rem;
+    border-radius:1rem;
+    margin-bottom:2rem;
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
 
-        /* Profile Card */
-        .profile-card {
-            width:100%;
-            background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
-            color:white;
-            padding:2rem;
-            border-radius:1rem;
-            margin-bottom:2rem;
-            display:flex;
-            flex-direction:column;
-            gap:1rem;
-            box-shadow:0 6px 20px rgba(0,0,0,0.15);
-            transition:0.2s ease;
-        }
-        .profile-card:hover {
-            transform:translateY(-4px);
-            box-shadow:0 10px 25px rgba(0,0,0,0.25);
-        }
+/* Buttons */
+.profile-btn {
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 2px solid #ff416c;
+    background: #fff;
+    color: #ff416c;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-btn:hover {
+    background:#ff416c;
+    color:white;
+}
 
-        /* Tweet Card */
-        .tweet-card {
-            width:100%;
-            background:#fff;
-            color:#333;
-            padding:1rem 1.5rem;
-            border-radius:12px;
-            margin-bottom:1rem;
-            box-shadow:0 6px 20px rgba(0,0,0,0.1);
-            transition:0.2s ease;
-        }
-        .tweet-card:hover {
-            transform:translateY(-2px);
-            box-shadow:0 10px 25px rgba(0,0,0,0.15);
-        }
+/* Tweet Card */
+.tweet-card {
+    width: 100%;
+    background: #fff;
+    color: #333;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        .like-btn {
-            padding:0.3rem 0.7rem;
-            border-radius:10px;
-            font-weight:600;
-            border:2px solid #e0245e;
-            background:transparent;
-            color:#e0245e;
-            cursor:pointer;
-            transition:0.3s;
-            margin-right: 2rem; /* <-- ajout : espace après le bouton "like" */
-        }
-        .like-btn.liked { 
-            background:#e0245e; 
-            color:white; 
-            border:none; 
-        }
-        .like-btn:hover { filter:brightness(1.1); }
+/* Tweet actions */
+.tweet-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
 
-        .comment-btn {
-            padding:0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            background: #ff416c;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-left: 0.2rem; /* optionnel : léger espace côté gauche pour éviter collusion */
-        }
-        .comment-btn:hover { filter: brightness(1.1); }
+.like-btn, .comment-btn, .delete-btn {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-        .delete-btn {
-            padding:0.3rem 0.7rem;
-            border-radius:10px;
-            font-weight:600;
-            border:none;
-            background:#c00;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-        }
-        .delete-btn:hover { filter:brightness(1.2); }
+.like-btn {
+    border: 1px solid #e0245e;
+    background: transparent;
+    color: #e0245e;
+}
+.like-btn.liked {
+    background: #e0245e;
+    color: white;
+    border: none;
+}
+.like-btn:hover { filter: brightness(1.1); }
 
-        /* Comment Section */
-        .comment-section {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            width: 100%;
-        }
-        .comment-input { flex:1; padding:0.5rem; border-radius:8px; border:1px solid #ddd; font-size:1rem; }
+.comment-btn {
+    background: #ff416c;
+    color: white;
+    border: none;
+    width: 36px;           /* carré */
+    height: 36px;          /* carré */
+    border-radius: 10px;   /* angles arrondis */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-        /* Layout Helpers */
-        .home-tabs { display:flex; gap:1rem; margin-bottom:1rem; }
-        .home-separator { height:1rem; }
-        .tweets-container { display:flex; flex-direction:column; gap:1.5rem; }
-        .hero-body { display:flex; justify-content:center; align-items:flex-start; padding:2rem 0; }
-        .container { width:100%; max-width:900px; }
+.comment-btn:hover {
+    background: #ff1e3c;
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(255,30,60,0.4);
+}
 
-        /* Flash messages */
-        .flash-messages .alert {
-            border-radius:0.5rem;
-            padding:0.75rem 1rem;
-            margin-bottom:0.5rem;
-            background-color:#4caf50;
-            color:white;
-            box-shadow:0 2px 6px rgba(0,0,0,0.1);
-            transition:opacity 0.5s ease;
-        }
-    </style>
+.comment-btn i {
+    font-size: 0.9rem;
+}
+
+/* Comment Block */
+.comments-block {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.comment-item {
+    background: #f1f3f5;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #333;
+    word-break: break-word;
+}
+
+/* Comment Section */
+.comment-section {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+.comment-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: #ff4b5c;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.delete-btn i {
+    font-size: 0.9rem;
+}
+.delete-btn:hover {
+    background: #d41831;
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(255,30,60,0.4);
+}
+
+/* Hashtag style */
+.hashtag {
+    color: #f21d41;
+    text-decoration: none;
+    font-weight: 600;
+}
+.hashtag:hover {
+    text-decoration: underline;
+}
+
+/* Layout helpers */
+.home-tabs { display:flex; gap:1rem; margin-bottom:1rem; }
+.tweets-container { display:flex; flex-direction:column; gap:1.5rem; }
+.hero-body { display:flex; justify-content:center; align-items:flex-start; padding:2rem 0; }
+.container { width:100%; max-width:900px; }
+
+/* Flash messages */
+.flash-messages .alert {
+    border-radius:0.5rem;
+    padding:0.75rem 1rem;
+    margin-bottom:0.5rem;
+    background-color:#4caf50;
+    color:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    transition:opacity 0.5s ease;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .tweet-actions, .comment-section { flex-direction: column; gap: 0.25rem; }
+    .like-btn, .comment-btn, .delete-btn { width: 100%; }
+}
+</style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav style="display:flex; align-items:center; padding:1rem; flex-wrap: wrap; gap:1rem; justify-content: space-between;">
-        <!-- Left -->
-        <div style="display:flex; gap:0.5rem; flex:1;">
-            <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">
-                <i class="fas fa-house"></i>
-            </a>
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">
-                <i class="fas fa-user"></i>
-            </a>
-            {% endif %}
-        </div>
+<!-- Navbar -->
+<nav style="display:flex; align-items:center; padding:1rem; flex-wrap: wrap; gap:1rem; justify-content: space-between;">
+    <!-- Left -->
+    <div style="display:flex; gap:0.5rem; flex:1;">
+        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">
+            <i class="fas fa-house"></i>
+        </a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">
+            <i class="fas fa-user"></i>
+        </a>
+        {% endif %}
+    </div>
 
-        <!-- Center search -->
-        <div style="flex:2; display:flex; justify-content:center;">
-            <form action="{{ url_for('main.search_user') }}" method="get" class="search-form" style="width:100%; max-width:400px; display:flex; gap:0.5rem;">
-                <input type="text" name="q" placeholder="Search users...">
-                <button type="submit" class="navbar-button">
-                    <i class="fas fa-magnifying-glass"></i></a>
-                </button>
-            </form>
-        </div>
+    <!-- Center search -->
+    <div style="flex:2; display:flex; justify-content:center;">
+        <form action="{{ url_for('main.search') }}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search users or #hashtags" required>
+            <button type="submit" class="navbar-button">
+                <i class="fas fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
 
-        <!-- Right -->
-        <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-sign-out-alt"></i></a>
-            {% else %}
-            <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}"><i class="fas fa-sign-in-alt"></i></a>
-            <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}"><i class="fas fa-user-plus"></i></a>
-            {% endif %}
-        </div>
-    </nav>
+    <!-- Right -->
+    <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-sign-out-alt"></i></a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}"><i class="fas fa-sign-in-alt"></i></a>
+        <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}"><i class="fas fa-user-plus"></i></a>
+        {% endif %}
+    </div>
+</nav>
 
-    <!-- Main Section -->
-    <section class="hero">
-        <div class="hero-body">
-            <div class="container">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                  <div class="flash-messages">
-                      {% for category, message in messages %}
-                      <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
-                          {{ message }}
-                      </div>
-                      {% endfor %}
-                  </div>
-                  {% endif %}
-                {% endwith %}
+<!-- Main Section -->
+<section class="hero">
+<div class="hero-body">
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+          {% for category, message in messages %}
+          <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
+              {{ message }}
+          </div>
+          {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
 
-                {% block content %}{% endblock %}
-            </div>
-        </div>
-    </section>
+    {% block content %}{% endblock %}
+</div>
+</div>
+</section>
 
-    <script>
-        document.querySelectorAll('.flash-messages .alert').forEach(msg => {
-            setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
-        });
-    </script>
+<script>
+document.querySelectorAll('.flash-messages .alert').forEach(msg => {
+    setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
+});
+</script>
 </body>
 </html>

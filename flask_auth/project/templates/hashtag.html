@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title gradient-text" style="text-align:center; margin-bottom:2rem;">
+    #{{ tag }}
+</h1>
+
+<div class="container" style="max-width:600px; margin:0 auto; padding:2rem; background:#fff;
+     border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+
+    {% if tweets %}
+        {% for tweet in tweets %}
+            <div class="tweet" style="padding:1rem; border-bottom:1px solid #eee; margin-bottom:0.5rem;">
+                <p>
+                    {% for word in tweet.content.split() %}
+                        {% if word.startswith('#') %}
+                            <a href="{{ url_for('main.hashtag', tag=word[1:]) }}" 
+                               style="color:#ff416c; text-decoration:none;">
+                               {{ word }}
+                            </a>
+                        {% else %}
+                            {{ word }}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                <small style="color:gray;">{{ tweet.timestamp.strftime('%Y-%m-%d %H:%M') }} by {{ tweet.user.name }}</small>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center;">No tweets found for this hashtag.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

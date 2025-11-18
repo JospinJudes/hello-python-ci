@@ -11,6 +11,14 @@ followers = db.Table(
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+# Table d'association Tweet <-> Hashtag
+tweet_hashtag = db.Table(
+    'tweet_hashtag',
+    db.Column('tweet_id', db.Integer, db.ForeignKey('tweet.id')),
+    db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'))
+)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
@@ -73,9 +81,18 @@ class Tweet(db.Model):
     likes = db.relationship('Like', backref='tweet', lazy='dynamic')
     comments = db.relationship('Comment', backref='tweet', lazy='dynamic')
 
+    #  Relation avec les hashtags
+    hashtags = db.relationship(
+        'Hashtag',
+        secondary=tweet_hashtag,
+        back_populates='tweets',
+        lazy='dynamic'
+    )
+
     @property
     def likes_count(self):
         return self.likes.count()
+
 
 
 # ====================
@@ -95,3 +112,29 @@ class Comment(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
+
+    @property
+    def content_with_hashtags(self):
+        import re
+        from flask import url_for
+        # Remplace #hashtag par lien cliquable
+        def repl(match):
+            tag = match.group(1)
+            return f'<a href="{url_for("main.hashtag", tag=tag)}" class="hashtag">#{tag}</a>'
+        return re.sub(r'#(\w+)', repl, self.content)
+
+
+
+
+
+class Hashtag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String(100), unique=True, nullable=False)
+
+    # relation inverse vers les tweets
+    tweets = db.relationship(
+        'Tweet',
+        secondary=tweet_hashtag,
+        back_populates='hashtags',
+        lazy='dynamic'
+    )
