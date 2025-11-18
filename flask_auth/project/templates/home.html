@@ -40,7 +40,7 @@
             {% set liked = tweet.id in current_user.liked_tweet_ids %}
             <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST">
                 <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
-                    ❤️ Like ({{ tweet.likes_count }})
+                    ❤️ ({{ tweet.likes_count }})
                 </button>
             </form>
         </div>
