@@ -107,6 +107,7 @@ def tweet():
             flash("Your tweet must be between 1 and 280 characters long.")
     return render_template('tweet.html', form=form)
 
+
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
 @login_required
 def delete_tweet(tweet_id):
