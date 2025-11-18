@@ -1,23 +1,23 @@
 <div class="tweet-card">
+
     <!-- Header -->
-    <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
+    <div class="tweet-header">
+        <div class="tweet-author">
             <strong>@{{ tweet.user.name }}</strong>
-            <small style="color:#888; margin-left:0.5rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+            <span class="tweet-date">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
         </div>
 
         {% if show_delete %}
-        <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" style="margin:0;">
+        <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" class="delete-form">
             <button type="submit" class="delete-btn">
-            <i class="fas fa-trash"></i>
-</button>
-
+                <i class="fas fa-trash"></i>
+            </button>
         </form>
         {% endif %}
     </div>
 
-    <!-- Contenu avec hashtags cliquables -->
-    <div class="tweet-content" style="margin-top:0.5rem;">
+    <!-- Content -->
+    <div class="tweet-content">
         {% for word in tweet.content.split() %}
             {% if word.startswith('#') %}
                 <a href="{{ url_for('main.hashtag', tag=word[1:]) }}" class="hashtag">{{ word }}</a>
@@ -28,18 +28,17 @@
         {% endfor %}
     </div>
 
-    <!-- Actions (like/comment) -->
+    <!-- Actions -->
     <div class="tweet-actions">
-        {% set liked = tweet.id in current_user.liked_tweet_ids %}
+        <!-- Like -->
         <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST">
-            <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
-                ❤️ ({{ tweet.likes_count }})
+            <button type="submit" class="like-btn {% if tweet.id in current_user.liked_tweet_ids %}liked{% endif %}">
+                <i class="fas fa-heart"></i> {{ tweet.likes_count }}
             </button>
         </form>
     </div>
 
     <!-- Comment Form -->
-<!-- Comment Form -->
     <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" class="comment-section">
         <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
         <button type="submit" class="comment-btn">
@@ -47,21 +46,22 @@
         </button>
     </form>
 
-
-    <!-- Liste des commentaires -->
+    <!-- Comments -->
     {% if tweet.comments %}
     <div class="comments-block">
         {% for comment in tweet.comments %}
         <div class="comment-item">
-            <strong>{{ comment.user.name }}</strong>:
-            {% for word in comment.content.split() %}
-                {% if word.startswith('#') %}
-                    <a href="{{ url_for('main.hashtag', tag=word[1:]) }}" class="hashtag">{{ word }}</a>
-                {% else %}
-                    {{ word }}
-                {% endif %}
-                &nbsp;
-            {% endfor %}
+            <strong>{{ comment.user.name }}</strong>
+            <span class="comment-text">
+                {% for word in comment.content.split() %}
+                    {% if word.startswith('#') %}
+                        <a href="{{ url_for('main.hashtag', tag=word[1:]) }}" class="hashtag">{{ word }}</a>
+                    {% else %}
+                        {{ word }}
+                    {% endif %}
+                    &nbsp;
+                {% endfor %}
+            </span>
         </div>
         {% endfor %}
     </div>

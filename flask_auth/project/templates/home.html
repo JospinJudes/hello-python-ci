@@ -5,11 +5,13 @@
 
 <!-- Navigation Tabs -->
 <div class="home-tabs">
-    <a href="{{ url_for('main.home', sort='timeline') }}" class="navbar-button home-tab {% if sort=='timeline' %}active{% endif %}">
-        Timeline
+    <a href="{{ url_for('main.home', sort='timeline') }}" 
+       class="navbar-button {% if sort=='timeline' %}active{% endif %}">
+       Timeline
     </a>
-    <a href="{{ url_for('main.home', sort='ranked') }}" class="navbar-button home-tab {% if sort=='ranked' %}active{% endif %}">
-        Ranked
+    <a href="{{ url_for('main.home', sort='ranked') }}" 
+       class="navbar-button {% if sort=='ranked' %}active{% endif %}">
+       Most Popular
     </a>
 </div>
 

@@ -9,14 +9,35 @@
 
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
             {% if is_own_profile %}
-                <!-- Edit Bio styled like Change Password -->
-                <a href="#" id="edit-bio-btn" class="profile-btn">Edit Bio</a>
-                <a href="{{ url_for('main.tweet') }}" class="profile-btn">Post</a>
-                <a href="{{ url_for('auth.password_page') }}" class="profile-btn">Change Password</a>
+
+                <!-- EDIT BIO -->
+                <a href="#" id="edit-bio-btn" class="profile-btn icon-gap">
+                    <i class="fas fa-pen"></i>
+                    Edit Bio
+                </a>
+
+                <!-- POST -->
+                <a href="{{ url_for('main.tweet') }}" class="profile-btn icon-gap">
+                    <i class="fas fa-paper-plane"></i>
+                    Post
+                </a>
+
+                <!-- CHANGE PASSWORD -->
+                <a href="{{ url_for('auth.password_page') }}" class="profile-btn icon-gap">
+                    <i class="fas fa-lock"></i>
+                    Change Password
+                </a>
+
             {% else %}
                 <form action="{{ url_for('main.unfollow', user_id=user.id) if current_user.is_following(user) else url_for('main.follow', user_id=user.id) }}" method="POST" style="margin:0;">
-                    <button type="submit" class="profile-btn {% if current_user.is_following(user) %}unfollow-btn{% else %}follow-btn{% endif %}">
-                        {% if current_user.is_following(user) %}Unfollow{% else %}Follow{% endif %}
+                    <button type="submit" class="profile-btn icon-gap {% if current_user.is_following(user) %}unfollow-btn{% else %}follow-btn{% endif %}">
+                        {% if current_user.is_following(user) %}
+                            <i class="fas fa-user-minus"></i>
+                            Unfollow
+                        {% else %}
+                            <i class="fas fa-user-plus"></i>
+                            Follow
+                        {% endif %}
                     </button>
                 </form>
             {% endif %}
@@ -24,22 +45,34 @@
     </div>
 
     <!-- Bio -->
-    <p id="bio-text" class="bio-text" style="margin-top:1rem;">{{ user.bio or "This user hasn’t written a bio yet." }}</p>
+    <p id="bio-text" class="bio-text" style="margin-top:1rem;">
+        {{ user.bio or "This user hasn’t written a bio yet." }}
+    </p>
 
     {% if is_own_profile %}
     <form id="edit-bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display:none; margin-top:1rem;">
-        <textarea name="bio" rows="4" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:1px solid #ccc; font-size:1rem; resize:none;">{{ user.bio or '' }}</textarea>
+        <textarea name="bio" rows="4" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:1px solid #ccc; font-size:1rem; resize:none;">
+            {{ user.bio or '' }}
+        </textarea>
+
         <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-            <button type="submit" class="profile-btn save-btn">Save</button>
-            <button type="button" id="cancel-bio-btn" class="profile-btn cancel-btn">Cancel</button>
+            <button type="submit" class="profile-btn save-btn icon-gap">
+                <i class="fas fa-check"></i>
+                Save
+            </button>
+
+            <button type="button" id="cancel-bio-btn" class="profile-btn cancel-btn icon-gap">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
         </div>
     </form>
     {% endif %}
 
     <!-- Stats -->
     <div style="display:flex; gap:2rem; margin-top:1rem; font-weight:600; font-size:1rem;">
-        <div>{{ following_count }} Following</div>
-        <div>{{ followers_count }} Followers</div>
+        <div class="icon-gap"><i class="fas fa-user-friends"></i>{{ following_count }} Following</div>
+        <div class="icon-gap"><i class="fas fa-users"></i>{{ followers_count }} Followers</div>
     </div>
 
 </div>
@@ -48,7 +81,7 @@
 <div class="tweets-container">
     {% if tweets %}
         {% for tweet in tweets %}
-            {% set show_delete = is_own_profile %}  {# bouton supprimer seulement si c’est le propriétaire #}
+            {% set show_delete = is_own_profile %}
             {% include "_tweet_card.html" %}
         {% endfor %}
     {% else %}
@@ -65,7 +98,7 @@ const bioText = document.getElementById('bio-text');
 
 if(editBtn && cancelBtn && form && bioText){
     editBtn.addEventListener('click', (e)=>{ 
-        e.preventDefault(); // empêche le scroll si <a> est cliqué
+        e.preventDefault();
         form.style.display='block'; 
         editBtn.style.display='none'; 
         bioText.style.display='none'; 
