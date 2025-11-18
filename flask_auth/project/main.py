@@ -18,16 +18,15 @@ def index():
 @login_required
 def home():
     sort = request.args.get('sort', 'timeline')
-    following_ids_q = current_user.followed.with_entities(User.id)
+    following_ids = [u.id for u in current_user.followed]
+    following_ids.append(current_user.id)
+
 
     if sort == 'ranked':
         ranked_q = (
             db.session.query(Tweet, func.count(Like.id).label("lc"))
             .outerjoin(Like, Like.tweet_id == Tweet.id)
-            .filter(
-                (Tweet.user_id == current_user.id) |
-                (Tweet.user_id.in_(following_ids_q))
-            )
+            .filter(Tweet.user_id.in_(following_ids))
             .group_by(Tweet.id)
             .order_by(func.count(Like.id).desc(), Tweet.timestamp.desc())
         )
@@ -35,10 +34,7 @@ def home():
     else:
         tweets = (
             Tweet.query
-            .filter(
-                (Tweet.user_id == current_user.id) |
-                (Tweet.user_id.in_(following_ids_q))
-            )
+            .filter(Tweet.user_id.in_(following_ids))
             .order_by(Tweet.timestamp.desc())
             .all()
         )
