@@ -22,11 +22,8 @@ env/
 
 # Flask / data locale
 instance/
-*.sqlite
-*.db
 
-instance/*.sqlite
-instance/*.db
+
 instance/*-journal
 
 # Pytest cache
