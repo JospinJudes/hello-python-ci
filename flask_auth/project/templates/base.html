@@ -11,20 +11,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 <style>
-
-/* GLOBAL -------------------------------------------------------- */
-
+/* ================= GLOBAL ================= */
 body {
     background: #fafafa;
     font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
     color: #333;
     margin: 0;
     min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
 }
-
 a { text-decoration: none; }
-
-/* Gradient Text */
 .gradient-text {
     background: linear-gradient(45deg, #ff416c, #ff6a00, #ffd500);
     -webkit-background-clip: text;
@@ -32,8 +28,7 @@ a { text-decoration: none; }
     font-weight: 700;
 }
 
-/* NAVBAR -------------------------------------------------------- */
-
+/* ================= NAVBAR ================= */
 nav {
     display: flex;
     align-items: center;
@@ -46,8 +41,6 @@ nav {
     top: 0;
     z-index: 50;
 }
-
-/* Navbar generic button */
 .navbar-button {
     border-radius: 20px;
     padding: 0.55rem 0.9rem;
@@ -62,53 +55,47 @@ nav {
     cursor: pointer;
     transition: .25s;
 }
-
 .navbar-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 14px rgba(255,65,108,0.4);
 }
-
 .navbar-button.active {
     background: linear-gradient(45deg, #ff6a00, #ffd500);
 }
 
+/* ================= HOME TABS ================= */
 .home-tabs {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
-
 .home-tabs .navbar-button {
-    padding: 0.4rem 0.8rem;   /* plus compact que navbar principale */
-    font-size: 0.9rem;        /* légèrement plus petit */
-    font-weight: bold;         /* texte en gras */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: bold;
     border-radius: 20px;
     border: 2px solid transparent;
-    background: #f0f0f0;      /* gris clair par défaut */
+    background: #f0f0f0;
     color: #333;
     transition: all 0.2s ease;
 }
-
 .home-tabs .navbar-button:hover {
-    background: #ffe6e6;      /* léger effet au survol */
+    background: #ffe6e6;
 }
-
 .home-tabs .navbar-button.active {
-    background: #ff416c;      /* fond rose/orange pour actif */
-    color: white;             /* texte blanc */
-    border-color: #ff416c;    /* bord actif */
+    background: #ff416c;
+    color: white;
+    border-color: #ff416c;
 }
 
-
-/* Search bar inside navbar */
+/* ================= SEARCH ================= */
 .search-form {
     display: flex;
     gap: 0.5rem;
     width: 100%;
     max-width: 420px;
 }
-
 .search-form input {
     flex: 1;
     border-radius: 22px;
@@ -116,14 +103,12 @@ nav {
     border: 2px solid #ddd;
     transition: .25s;
 }
-
 .search-form input:focus {
     border-color: #ff416c;
     box-shadow: 0 0 6px rgba(255,65,108,0.3);
 }
 
-/* PROFILE CARD -------------------------------------------------------- */
-
+/* ================= PROFILE CARD ================= */
 .profile-card {
     background: linear-gradient(135deg, #ff416c, #ff6a00);
     color: white;
@@ -132,8 +117,6 @@ nav {
     margin-bottom: 2rem;
     box-shadow: 0 6px 22px rgba(0,0,0,0.15);
 }
-
-/* Rounded white-outline buttons */
 .profile-btn {
     border-radius: 25px;
     padding: 0.45rem 0.9rem;
@@ -148,41 +131,25 @@ nav {
     color: white;
 }
 
-/* TWEET CARDS -------------------------------------------------------- */
-
+/* ================= TWEET CARDS ================= */
 .tweet-card {
     background: #fff;
     padding: 1rem;
     border-radius: 12px;
     margin-bottom: 1.1rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+    color: #333;
 }
-
-/* header with delete */
 .tweet-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
-.tweet-author strong {
-    font-weight: 600;
-}
-
-.tweet-date {
-    color: #888;
-    margin-left: 0.4rem;
-    font-size: 0.85rem;
-}
+.tweet-author strong { font-weight: 600; }
+.tweet-date { color: #888; margin-left: 0.4rem; font-size: 0.85rem; }
 
 /* Action buttons */
-.tweet-actions {
-    display: flex;
-    gap: 0.6rem;
-    margin-top: 0.6rem;
-}
-
-/* Like button */
+.tweet-actions { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
 .like-btn {
     border: 1px solid #e0245e;
     background: transparent;
@@ -193,17 +160,9 @@ nav {
     cursor: pointer;
     transition: .2s;
 }
+.like-btn.liked { background: #e0245e; color: white; }
+.like-btn:hover { filter: brightness(1.15); }
 
-.like-btn.liked {
-    background: #e0245e;
-    color: white;
-}
-
-.like-btn:hover {
-    filter: brightness(1.15);
-}
-
-/* Comment button (square) */
 .comment-btn {
     background: #ff416c;
     color: white;
@@ -216,15 +175,8 @@ nav {
     justify-content: center;
     transition: .2s;
 }
+.comment-btn:hover { background: #ff1e3c; transform: scale(1.1); box-shadow: 0 3px 8px rgba(255,30,60,0.4); }
 
-.comment-btn:hover {
-    background: #ff1e3c;
-    transform: scale(1.1);
-    box-shadow: 0 3px 8px rgba(255,30,60,0.4);
-}
-
-
-/* Delete button */
 .delete-btn {
     background: #ff4b5c;
     color: white;
@@ -238,101 +190,79 @@ nav {
     cursor: pointer;
     transition: .2s;
 }
-.delete-btn:hover {
-    background: #d41831;
-    transform: scale(1.1);
-    box-shadow: 0 2px 7px rgba(255,30,60,0.45);
-}
+.delete-btn:hover { background: #d41831; transform: scale(1.1); box-shadow: 0 2px 7px rgba(255,30,60,0.45); }
 
-/* COMMENTS -------------------------------------------------------- */
+/* Comment Section */
+.comment-section { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+.comment-input { flex: 1; border-radius: 8px; padding: 0.45rem 0.75rem; border: 1px solid #ddd; color: #333; }
+.comments-block { margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.comment-item { background: #f1f3f6; padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.9rem; color: #333; }
+.hashtag { color: #ff416c; font-weight: 600; }
 
-.comment-section {
-    display: flex;
-    gap: 0.6rem;
-    margin-top: 0.6rem;
-}
-.comment-input {
-    flex: 1;
-    border-radius: 8px;
-    padding: 0.45rem 0.75rem;
-    border: 1px solid #ddd;
-}
+/* Flash Messages */
+.flash-messages .alert { background: #4caf50; color: white; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; }
 
-.comments-block {
-    margin-top: 0.6rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-}
-
-.comment-item {
-    background: #f1f3f6;
-    padding: 0.6rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-}
-
-/* Hashtag */
-.hashtag {
-    color: #ff416c;
-    font-weight: 600;
-}
-
-/* FLASH MESSAGES -------------------------------------------------------- */
-
-.flash-messages .alert {
-    background: #4caf50;
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.6rem;
-}
-
-/* RESPONSIVE -------------------------------------------------------- */
-
+/* Responsive */
 @media(max-width: 600px) {
-    .tweet-actions,
-    .comment-section {
-        flex-direction: column;
-    }
-    .like-btn,
-    .comment-btn,
-    .delete-btn {
-        width: 100%;
-    }
+    .tweet-actions, .comment-section { flex-direction: column; }
+    .like-btn, .comment-btn, .delete-btn { width: 100%; }
 }
+
+/* ================= DARK THEME ================= */
+body.dark-theme {
+    background: #121212;
+    color: #e0e0e0; /* texte principal blanc */
+}
+body.dark-theme nav { background: #1e1e1e; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+body.dark-theme .navbar-button { background: #333; color: #fff; }
+body.dark-theme .navbar-button.active { background: #ff416c; color: #fff; }
+body.dark-theme .home-tabs .navbar-button { background: #1e1e1e; color: #ccc; }
+body.dark-theme .home-tabs .navbar-button.active { background: #ff416c; color: #fff; border-color: #ff416c; }
+
+body.dark-theme .profile-card { background: linear-gradient(135deg, #ff416c, #ff6a00); color: #fff; }
+body.dark-theme .profile-btn { background: #fff; color: #ff416c; }
+body.dark-theme .profile-btn:hover { background: #ff416c; color: white; }
+
+body.dark-theme .tweet-card { background: #1e1e1e; color: #e0e0e0; }
+body.dark-theme .tweet-date, body.dark-theme .comment-item { color: #aaa; }
+
+body.dark-theme .like-btn { border: 1px solid #e0245e; color: #e0245e; background: transparent; }
+body.dark-theme .like-btn.liked { background: #e0245e; color: white; }
+body.dark-theme .comment-btn { background: #ff416c; color: white; }
+body.dark-theme .delete-btn { background: #ff4b5c; color: white; }
+
+body.dark-theme .comment-input { background: #2c2c2c; color: #e0e0e0; border-color: #555; }
+body.dark-theme .comment-item { background: #2c2c2c; color: #e0e0e0; }
+body.dark-theme .hashtag { color: #ff6a00; font-weight: 600; }
+body.dark-theme .flash-messages .alert { background: #388e3c; color: white; }
+body.dark-theme .search-form input { background: #2c2c2c; color: #e0e0e0; border-color: #555; }
 
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -------------------------------------------------------- -->
+<!-- NAVBAR -->
 <nav>
-    <!-- Left -->
     <div style="display:flex; gap:0.5rem; flex:1;">
-        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">
+        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint=='main.index' %}active{% endif %}">
             <i class="fas fa-house"></i>
         </a>
-
         {% if current_user.is_authenticated %}
-        <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">
+        <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint=='main.profile' %}active{% endif %}">
             <i class="fas fa-user"></i>
         </a>
         {% endif %}
     </div>
 
-    <!-- Center Search -->
     <form action="{{ url_for('main.search') }}" method="get" class="search-form">
         <input type="text" name="q" placeholder="Search users or #hashtags" required>
         <button class="navbar-button"><i class="fas fa-search"></i></button>
     </form>
 
-    <!-- Right -->
     <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
+        <button id="theme-toggle" class="navbar-button"><i class="fas fa-moon"></i> Dark</button>
         {% if current_user.is_authenticated %}
-        <a href="{{ url_for('auth.logout') }}" class="navbar-button">
-            <i class="fas fa-right-from-bracket"></i>
-        </a>
+        <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-right-from-bracket"></i></a>
         {% else %}
         <a href="{{ url_for('auth.login') }}" class="navbar-button"><i class="fas fa-right-to-bracket"></i></a>
         <a href="{{ url_for('auth.signup') }}" class="navbar-button"><i class="fas fa-user-plus"></i></a>
@@ -340,12 +270,12 @@ nav {
     </div>
 </nav>
 
-<!-- MAIN CONTENT -------------------------------------------------------- -->
+<!-- MAIN CONTENT -->
 <section class="hero">
 <div class="hero-body">
 <div class="container">
 
-    <!-- Flash -->
+    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       <div class="flash-messages">
@@ -357,13 +287,32 @@ nav {
     {% endwith %}
 
     {% block content %}{% endblock %}
+
 </div>
 </div>
 </section>
 
 <script>
+// === THEME PERSISTENCE ===
+const toggle = document.getElementById('theme-toggle');
+if(localStorage.getItem('theme') === 'dark'){
+    document.body.classList.add('dark-theme');
+    toggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+}
+toggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    if(document.body.classList.contains('dark-theme')){
+        toggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        toggle.innerHTML = '<i class="fas fa-moon"></i> Dark';
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+// Auto fade flash messages
 document.querySelectorAll('.flash-messages .alert').forEach(msg => {
-    setTimeout(() => msg.style.opacity = 0, 3000);
+    setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
 });
 </script>
 

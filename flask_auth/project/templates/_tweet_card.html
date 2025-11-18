@@ -51,7 +51,7 @@
     <div class="comments-block">
         {% for comment in tweet.comments %}
         <div class="comment-item">
-            <strong>{{ comment.user.name }}</strong>
+            <strong>@{{ comment.user.name }} : </strong>
             <span class="comment-text">
                 {% for word in comment.content.split() %}
                     {% if word.startswith('#') %}
@@ -67,3 +67,62 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Mode sombre CSS -->
+<style>
+/* Auteur */
+body.dark-theme .tweet-author strong {
+    color: #fff;
+}
+body:not(.dark-theme) .tweet-author strong {
+    color: #000;
+}
+
+/* Date du tweet */
+body.dark-theme .tweet-date {
+    color: #aaa;
+}
+body:not(.dark-theme) .tweet-date {
+    color: #888;
+}
+
+/* Contenu des commentaires */
+body.dark-theme .comment-item {
+    background: #2c2c2c; /* optionnel */
+    color: #e0e0e0;
+}
+body:not(.dark-theme) .comment-item {
+    background: #f1f3f6;
+    color: #555;
+}
+
+/* Hashtags */
+body.dark-theme .hashtag {
+    color: #ff416c;
+}
+body:not(.dark-theme) .hashtag {
+    color: #ff416c;
+}
+
+/* Input commentaire */
+body.dark-theme .comment-input {
+    background: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+body:not(.dark-theme) .comment-input {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+
+}
+/* Nom des auteurs des commentaires */
+body.dark-theme .comment-item strong {
+    color: #cccccc;  /* gris clair en sombre */
+}
+body:not(.dark-theme) .comment-item strong {
+    color: #444444;  /* gris foncé en clair */
+}
+
+/* Boutons like/delete/comment restent inchangés, leurs couleurs sont déjà visibles en sombre */
+</style>
