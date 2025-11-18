@@ -16,7 +16,6 @@
     </a>
 </div>
 
-<!-- LARGE SPACE BETWEEN BUTTONS AND CONTENT -->
 <div class="home-separator"></div>
 
 {% if tweets %}
@@ -25,36 +24,39 @@
     {% for tweet in tweets %}
     <div class="tweet-card">
 
+        <!-- Header -->
         <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="tweet-user">@{{ tweet.user.name }}</div>
+            <div class="tweet-user"><strong>@{{ tweet.user.name }}</strong></div>
             <div class="tweet-date">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</div>
         </div>
 
+        <!-- Content -->
         <div class="tweet-content" style="margin-top:0.5rem;">
             {{ tweet.content }}
         </div>
 
+        <!-- Actions -->
         <div class="tweet-actions" style="margin-top:0.5rem;">
             {% set liked = tweet.id in current_user.liked_tweet_ids %}
-            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display:inline;">
+            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST">
                 <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
                     ❤️ Like ({{ tweet.likes_count }})
                 </button>
             </form>
         </div>
 
-        <!-- COMMENT FORM -->
-        <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}"
-              method="POST" class="comment-section">
+        <!-- Comment Form -->
+        <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" class="comment-section">
             <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
             <button type="submit" class="comment-btn">Comment</button>
         </form>
 
+        <!-- Comment List -->
         {% if tweet.comments %}
-        <ul class="comment-list" style="margin-top:0.5rem; padding-left:1rem; list-style:none;">
+        <ul class="comment-list" style="margin-top:0.5rem; list-style:none; padding-left:0;">
             {% for comment in tweet.comments %}
             <li class="comment-item" style="margin-bottom:0.25rem;">
-                <strong>{{ comment.user.name }}</strong> : {{ comment.content }}
+                <strong>{{ comment.user.name }}</strong>: {{ comment.content }}
             </li>
             {% endfor %}
         </ul>
@@ -64,7 +66,6 @@
     {% endfor %}
 
 </div>
-
 {% else %}
 <p class="empty-message" style="margin-top:1rem; font-style:italic; color:gray;">No posts yet.</p>
 {% endif %}
