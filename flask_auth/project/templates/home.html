@@ -25,46 +25,48 @@
     {% for tweet in tweets %}
     <div class="tweet-card">
 
-        <div class="tweet-header">
+        <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="tweet-user">@{{ tweet.user.name }}</div>
             <div class="tweet-date">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</div>
         </div>
 
-        <div class="tweet-content">
+        <div class="tweet-content" style="margin-top:0.5rem;">
             {{ tweet.content }}
         </div>
 
-        <div class="tweet-actions">
+        <div class="tweet-actions" style="margin-top:0.5rem;">
             {% set liked = tweet.id in current_user.liked_tweet_ids %}
-            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST">
+            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display:inline;">
                 <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
                     ❤️ Like ({{ tweet.likes_count }})
                 </button>
             </form>
         </div>
 
+        <!-- COMMENT FORM -->
         <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}"
-              method="POST" class="comment-form">
+              method="POST" class="comment-section">
             <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
             <button type="submit" class="comment-btn">Comment</button>
         </form>
 
         {% if tweet.comments %}
-        <ul class="comment-list">
+        <ul class="comment-list" style="margin-top:0.5rem; padding-left:1rem; list-style:none;">
             {% for comment in tweet.comments %}
-            <li class="comment-item">
+            <li class="comment-item" style="margin-bottom:0.25rem;">
                 <strong>{{ comment.user.name }}</strong> : {{ comment.content }}
             </li>
             {% endfor %}
         </ul>
         {% endif %}
+
     </div>
     {% endfor %}
 
 </div>
 
 {% else %}
-<p class="empty-message">No posts yet.</p>
+<p class="empty-message" style="margin-top:1rem; font-style:italic; color:gray;">No posts yet.</p>
 {% endif %}
 
 {% endblock %}
