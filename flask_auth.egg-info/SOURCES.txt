@@ -12,5 +12,6 @@ flask_auth/project/forms.py
 flask_auth/project/main.py
 flask_auth/project/models.py
 flask_auth/tests/conftest.py
+flask_auth/tests/test_change_password.py
 flask_auth/tests/test_signin.py
 flask_auth/tests/test_signup.py
