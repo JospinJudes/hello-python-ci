@@ -1,73 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1 class="title gradient-text page-title">Home</h1>
+<h1 class="title gradient-text page-title" style="text-align:center;">Home</h1>
 
-<!-- NAVIGATION TABS -->
+<!-- Navigation Tabs -->
 <div class="home-tabs">
-    <a href="{{ url_for('main.home', sort='timeline') }}"
-       class="navbar-button home-tab {% if sort=='timeline' %}active{% endif %}">
-        Timeline
+    <a href="{{ url_for('main.home', sort='timeline') }}" 
+       class="navbar-button {% if sort=='timeline' %}active{% endif %}">
+       Timeline
     </a>
-
-    <a href="{{ url_for('main.home', sort='ranked') }}"
-       class="navbar-button home-tab {% if sort=='ranked' %}active{% endif %}">
-        Ranked
+    <a href="{{ url_for('main.home', sort='ranked') }}" 
+       class="navbar-button {% if sort=='ranked' %}active{% endif %}">
+       Most Popular
     </a>
 </div>
 
 <div class="home-separator"></div>
 
-{% if tweets %}
 <div class="tweets-container">
-
-    {% for tweet in tweets %}
-    <div class="tweet-card">
-
-        <!-- Header -->
-        <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="tweet-user"><strong>@{{ tweet.user.name }}</strong></div>
-            <div class="tweet-date">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</div>
-        </div>
-
-        <!-- Content -->
-        <div class="tweet-content" style="margin-top:0.5rem;">
-            {{ tweet.content }}
-        </div>
-
-        <!-- Actions -->
-        <div class="tweet-actions" style="margin-top:0.5rem;">
-            {% set liked = tweet.id in current_user.liked_tweet_ids %}
-            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST">
-                <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
-                    ❤️ ({{ tweet.likes_count }})
-                </button>
-            </form>
-        </div>
-
-        <!-- Comment Form -->
-        <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" class="comment-section">
-            <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
-            <button type="submit" class="comment-btn">Comment</button>
-        </form>
-
-        <!-- Comment List -->
-        {% if tweet.comments %}
-        <ul class="comment-list" style="margin-top:0.5rem; list-style:none; padding-left:0;">
-            {% for comment in tweet.comments %}
-            <li class="comment-item" style="margin-bottom:0.25rem;">
-                <strong>{{ comment.user.name }}</strong>: {{ comment.content }}
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-    </div>
-    {% endfor %}
-
+    {% if tweets %}
+        {% for tweet in tweets %}
+            {% include "_tweet_card.html" %}
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center; color:gray; font-style:italic;">No tweets yet.</p>
+    {% endif %}
 </div>
-{% else %}
-<p class="empty-message" style="margin-top:1rem; font-style:italic; color:gray;">No posts yet.</p>
-{% endif %}
 
 {% endblock %}

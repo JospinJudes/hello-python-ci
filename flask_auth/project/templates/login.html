@@ -1,110 +1,196 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="login-container" style="display:flex; justify-content:center; align-items:center; min-height:100vh; padding:1rem;">
+<div class="login-container page-background" style="display:flex; justify-content:center; align-items:center; min-height:100vh; padding:1rem;">
 
-    <div class="login-box" 
-         style="
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 28px;
-            padding: 3rem 2.5rem;
-            max-width: 420px;
-            width: 100%;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-         ">
+    <div class="login-box">
 
-        <h2 class="title gradient-text" style="font-size:2.5rem; text-align:center; margin-bottom:2rem; font-weight:800;">
+        <h2 class="title gradient-text login-title">
             Login
         </h2>
 
         <!-- Flash messages -->
         {% with messages = get_flashed_messages(category_filter=['login']) %}
         {% if messages %}
-            <div class="notification is-danger" style="
-                border-radius: 12px; 
-                background: rgba(255, 37, 37, 0.85); 
-                color:white; 
-                text-align:center;
-                padding:0.8rem 1rem;
-                margin-bottom:1.5rem;
-                font-weight:600;
-            ">
+            <div class="notification login-flash">
                 {{ messages[0] }}
             </div>
         {% endif %}
         {% endwith %}
 
-        <form method="POST" action="/login" novalidate style="display:flex; flex-direction:column; gap:1rem;">
+        <form method="POST" action="/login" novalidate class="login-form">
+
             <!-- Email -->
-            <input class="input is-medium" 
-                   type="email" 
-                   name="email" 
-                   placeholder="Enter your email" 
-                   required
-                   style="
-                       border-radius: 18px;
-                       padding: 1rem;
-                       font-size: 1rem;
-                       background: rgba(250,250,250,0.95);
-                       border: 1px solid #ddd;
-                       transition: 0.3s;
-                   "
-                   onfocus="this.style.borderColor='#ff416c'; this.style.boxShadow='0 0 8px rgba(255,65,108,0.5)';" 
-                   onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
-            >
+            <div class="field">
+                <label for="email" class="field-label">Email</label>
+                <input class="input is-medium" 
+                       id="email"
+                       name="email" 
+                       type="email" 
+                       placeholder="Enter your email" 
+                       required>
+            </div>
 
             <!-- Password -->
-            <input class="input is-medium" 
-                   type="password" 
-                   name="password" 
-                   placeholder="Enter your password" 
-                   required
-                   style="
-                       border-radius: 18px;
-                       padding: 1rem;
-                       font-size: 1rem;
-                       background: rgba(250,250,250,0.95);
-                       border: 1px solid #ddd;
-                       transition: 0.3s;
-                   "
-                   onfocus="this.style.borderColor='#ff416c'; this.style.boxShadow='0 0 8px rgba(255,65,108,0.5)';" 
-                   onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
-            >
+            <div class="field">
+                <label for="password" class="field-label">Password</label>
+                <input class="input is-medium" 
+                       id="password"
+                       name="password" 
+                       type="password" 
+                       placeholder="Enter your password" 
+                       required>
+            </div>
 
             <!-- Remember me -->
-            <label class="checkbox" style="color:#444; font-size:0.9rem;">
-                <input type="checkbox" style="accent-color:#ff416c;"> Remember me
+            <div class="field remember-me">
+            <label class="checkbox" style="display:flex; align-items:center; gap:0.5rem; flex-wrap: nowrap;">
+                <input type="checkbox" style="accent-color:#ff416c;">
+                Remember
             </label>
-
+            </div>
             <!-- Submit -->
-            <button type="submit" class="button is-medium is-fullwidth" style="
-                    margin-top:1rem;
-                    border-radius:22px;
-                    padding:1rem;
-                    font-size:1.1rem;
-                    font-weight:bold;
-                    background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
-                    border:none;
-                    color:white;
-                    box-shadow:0 6px 18px rgba(255,75,43,0.35);
-                    cursor:pointer;
-                    transition:0.3s;
-                "
-                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 8px 22px rgba(255,75,43,0.45)';"
-                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 18px rgba(255,75,43,0.35)';">
+            <button type="submit" class="button login-submit">
                 Login
             </button>
         </form>
 
         <!-- Extra links -->
-        <p class="has-text-centered" style="margin-top:2rem; font-size:0.95rem; color:#333;">
+        <p class="login-extra">
             Don’t have an account yet?  
-            <a href="{{ url_for('auth.signup') }}" class="gradient-text" style="font-weight:600;">Sign up here</a>
+            <a href="{{ url_for('auth.signup') }}" class="gradient-text">Sign up here</a>
         </p>
 
     </div>
 </div>
+
+<!-- Styles spécifiques -->
+<style>
+/* ====== Login box ====== */
+.login-box {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    padding: 3rem 2.5rem;
+    max-width: 420px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* Login title */
+.login-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 800;
+}
+
+/* Form fields */
+.field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alignement à gauche */
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+.field-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #444; /* clair en mode clair */
+    text-align: left; /* label aligné à gauche */
+}
+
+/* Inputs */
+.login-form input {
+    border-radius: 18px;
+    padding: 1rem;
+    font-size: 1rem;
+    background: rgba(250,250,250,0.95);
+    border: 1px solid #ddd;
+    transition: 0.3s;
+    color: #333;
+    width: 100%;
+}
+.login-form input::placeholder {
+    color: #888;
+}
+
+/* Checkbox */
+.login-form label.checkbox {
+    font-weight: 500;
+    text-align: left;
+}
+
+/* Submit button */
+.login-submit {
+    border-radius: 22px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
+    border: none;
+    color: white;
+    box-shadow: 0 6px 18px rgba(255,75,43,0.35);
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+.login-submit:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 22px rgba(255,75,43,0.45);
+}
+
+/* Extra links */
+.login-extra {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: #333;
+    text-align: center;
+}
+
+/* Flash messages */
+.login-flash {
+    border-radius: 12px; 
+    background: rgba(255, 37, 37, 0.85); 
+    color: white; 
+    text-align: center;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ====== Dark theme adjustments ====== */
+body.dark-theme .login-box {
+    background: rgba(30,30,30,0.95);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+body.dark-theme .login-title {
+    color: #fff;
+}
+body.dark-theme .field-label {
+    color: #e0e0e0;
+}
+body.dark-theme .login-form input {
+    background: rgba(50,50,50,0.9);
+    color: #f0f0f0;
+    border: 1px solid #555;
+}
+body.dark-theme .login-form input::placeholder {
+    color: #ccc;
+}
+body.dark-theme .login-form label.checkbox {
+    color: #e0e0e0;
+}
+body.dark-theme .login-flash {
+    background: rgba(255, 50, 50, 0.85);
+    color: #fff;
+}
+body.dark-theme .login-extra {
+    color: #ccc;
+}
+</style>
 {% endblock %}

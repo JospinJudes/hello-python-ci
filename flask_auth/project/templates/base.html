@@ -1,266 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My App{% endblock %}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}My App{% endblock %}</title>
 
-    <!-- Bulma CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<!-- Bulma -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <style>
-        body {
-            background: #f9f9f9;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            min-height: 100vh;
-        }
-        a { text-decoration: none; }
+<style>
+/* ================= GLOBAL ================= */
+body {
+    background: #fafafa;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+a { text-decoration: none; }
+.gradient-text {
+    background: linear-gradient(45deg, #ff416c, #ff6a00, #ffd500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
 
-        /* Gradient Text */
-        .gradient-text {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #ffd500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
+/* ================= NAVBAR ================= */
+nav {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.navbar-button {
+    border-radius: 20px;
+    padding: 0.55rem 0.9rem;
+    font-size: 1rem;
+    background: linear-gradient(45deg, #ff416c, #ff6a00);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    cursor: pointer;
+    transition: .25s;
+}
+.navbar-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(255,65,108,0.4);
+}
+.navbar-button.active {
+    background: linear-gradient(45deg, #ff6a00, #ffd500);
+}
 
-        /* Navbar buttons */
-        .navbar-button {
-            border-radius: 24px;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 0.6rem 1rem;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00);
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        .navbar-button.active { 
-            background: linear-gradient(45deg, #ff6a00, #ffd500); 
-        }
-        .navbar-button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(255,65,108,0.4); 
-        }
+/* ================= HOME TABS ================= */
+.home-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.home-tabs .navbar-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background: #f0f0f0;
+    color: #333;
+    transition: all 0.2s ease;
+}
+.home-tabs .navbar-button:hover {
+    background: #ffe6e6;
+}
+.home-tabs .navbar-button.active {
+    background: #ff416c;
+    color: white;
+    border-color: #ff416c;
+}
 
-        /* Search Form */
-        .search-form { 
-            display: flex; 
-            gap: 0.5rem; 
-            width: 100%;
-        }
-        .search-form input[type="text"] {
-            flex: 1;
-            border-radius: 25px;
-            padding: 0.6rem 1rem;
-            border: 2px solid #ccc;
-            outline: none;
-            transition: 0.3s;
-        }
-        .search-form input[type="text"]:focus {
-            border-color: #ff416c;
-            box-shadow: 0 0 8px rgba(255,65,108,0.3);
-        }
+/* ================= SEARCH ================= */
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 420px;
+}
+.search-form input {
+    flex: 1;
+    border-radius: 22px;
+    padding: 0.6rem 1rem;
+    border: 2px solid #ddd;
+    transition: .25s;
+}
+.search-form input:focus {
+    border-color: #ff416c;
+    box-shadow: 0 0 6px rgba(255,65,108,0.3);
+}
 
-        /* Profile Buttons */
-        .profile-btn {
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.2;
-            letter-spacing: 0.5px;
-            padding: 0.5rem 1.5rem;
-            border: 2px solid #ff416c;
-            background: #fff;
-            color: #ff416c;
-            cursor: pointer;
-            transition: all 0.3s ease, transform 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .profile-btn:hover {
-            background:#ff416c;
-            color:white;
-            transform:translateY(-2px);
-            box-shadow:0 4px 12px rgba(255,65,108,0.3);
-        }
+/* ================= PROFILE CARD ================= */
+.profile-card {
+    background: linear-gradient(135deg, #ff416c, #ff6a00);
+    color: white;
+    padding: 2rem;
+    border-radius: 1.1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+}
+.profile-btn {
+    border-radius: 25px;
+    padding: 0.45rem 0.9rem;
+    background: #fff;
+    border: 2px solid #ff416c;
+    color: #ff416c;
+    font-weight: 600;
+    transition: .25s;
+}
+.profile-btn:hover {
+    background: #ff416c;
+    color: white;
+}
 
-        /* Profile Card */
-        .profile-card {
-            width:100%;
-            background: linear-gradient(135deg,#ff416c,#ff4b2b,#ff6a00);
-            color:white;
-            padding:2rem;
-            border-radius:1rem;
-            margin-bottom:2rem;
-            display:flex;
-            flex-direction:column;
-            gap:1rem;
-            box-shadow:0 6px 20px rgba(0,0,0,0.15);
-            transition:0.2s ease;
-        }
-        .profile-card:hover {
-            transform:translateY(-4px);
-            box-shadow:0 10px 25px rgba(0,0,0,0.25);
-        }
+/* ================= TWEET CARDS ================= */
+.tweet-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+    color: #333;
+}
+.tweet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tweet-author strong { font-weight: 600; }
+.tweet-date { color: #888; margin-left: 0.4rem; font-size: 0.85rem; }
 
-        /* Tweet Card */
-        .tweet-card {
-            width:100%;
-            background:#fff;
-            color:#333;
-            padding:1rem 1.5rem;
-            border-radius:12px;
-            margin-bottom:1rem;
-            box-shadow:0 6px 20px rgba(0,0,0,0.1);
-            transition:0.2s ease;
-        }
-        .tweet-card:hover {
-            transform:translateY(-2px);
-            box-shadow:0 10px 25px rgba(0,0,0,0.15);
-        }
+/* Action buttons */
+.tweet-actions { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+.like-btn {
+    border: 1px solid #e0245e;
+    background: transparent;
+    color: #e0245e;
+    border-radius: 8px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: .2s;
+}
+.like-btn.liked { background: #e0245e; color: white; }
+.like-btn:hover { filter: brightness(1.15); }
 
-        .like-btn {
-            padding:0.3rem 0.7rem;
-            border-radius:10px;
-            font-weight:600;
-            border:2px solid #e0245e;
-            background:transparent;
-            color:#e0245e;
-            cursor:pointer;
-            transition:0.3s;
-        }
-        .like-btn.liked { 
-            background:#e0245e; 
-            color:white; 
-            border:none; 
-        }
-        .like-btn:hover { filter:brightness(1.1); }
+.comment-btn {
+    background: #ff416c;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+}
+.comment-btn:hover { background: #ff1e3c; transform: scale(1.1); box-shadow: 0 3px 8px rgba(255,30,60,0.4); }
 
-        .comment-btn {
-            padding:0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            background: #ff416c;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .comment-btn:hover { filter: brightness(1.1); }
+.delete-btn {
+    background: #ff4b5c;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+.delete-btn:hover { background: #d41831; transform: scale(1.1); box-shadow: 0 2px 7px rgba(255,30,60,0.45); }
 
-        .delete-btn {
-            padding:0.3rem 0.7rem;
-            border-radius:10px;
-            font-weight:600;
-            border:none;
-            background:#c00;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-        }
-        .delete-btn:hover { filter:brightness(1.2); }
+/* Comment Section */
+.comment-section { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+.comment-input { flex: 1; border-radius: 8px; padding: 0.45rem 0.75rem; border: 1px solid #ddd; color: #333; }
+.comments-block { margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.comment-item { background: #f1f3f6; padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.9rem; color: #333; }
+.hashtag { color: #ff416c; font-weight: 600; }
 
-        /* Comment Section */
-        .comment-section {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            width: 100%;
-        }
-        .comment-input { flex:1; padding:0.5rem; border-radius:8px; border:1px solid #ddd; font-size:1rem; }
+/* Flash Messages */
+.flash-messages .alert { background: #4caf50; color: white; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; }
 
-        /* Layout Helpers */
-        .home-tabs { display:flex; gap:1rem; margin-bottom:1rem; }
-        .home-separator { height:1rem; }
-        .tweets-container { display:flex; flex-direction:column; gap:1.5rem; }
-        .hero-body { display:flex; justify-content:center; align-items:flex-start; padding:2rem 0; }
-        .container { width:100%; max-width:900px; }
+/* Responsive */
+@media(max-width: 600px) {
+    .tweet-actions, .comment-section { flex-direction: column; }
+    .like-btn, .comment-btn, .delete-btn { width: 100%; }
+}
 
-        /* Flash messages */
-        .flash-messages .alert {
-            border-radius:0.5rem;
-            padding:0.75rem 1rem;
-            margin-bottom:0.5rem;
-            background-color:#4caf50;
-            color:white;
-            box-shadow:0 2px 6px rgba(0,0,0,0.1);
-            transition:opacity 0.5s ease;
-        }
-    </style>
+/* ================= DARK THEME ================= */
+body.dark-theme {
+    background: #121212;
+    color: #e0e0e0; /* texte principal blanc */
+}
+body.dark-theme nav { background: #1e1e1e; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+body.dark-theme .navbar-button { background: #333; color: #fff; }
+body.dark-theme .navbar-button.active { background: #ff416c; color: #fff; }
+body.dark-theme .home-tabs .navbar-button { background: #1e1e1e; color: #ccc; }
+body.dark-theme .home-tabs .navbar-button.active { background: #ff416c; color: #fff; border-color: #ff416c; }
+
+body.dark-theme .profile-card { background: linear-gradient(135deg, #ff416c, #ff6a00); color: #fff; }
+body.dark-theme .profile-btn { background: #fff; color: #ff416c; }
+body.dark-theme .profile-btn:hover { background: #ff416c; color: white; }
+
+body.dark-theme .tweet-card { background: #1e1e1e; color: #e0e0e0; }
+body.dark-theme .tweet-date, body.dark-theme .comment-item { color: #aaa; }
+
+body.dark-theme .like-btn { border: 1px solid #e0245e; color: #e0245e; background: transparent; }
+body.dark-theme .like-btn.liked { background: #e0245e; color: white; }
+body.dark-theme .comment-btn { background: #ff416c; color: white; }
+body.dark-theme .delete-btn { background: #ff4b5c; color: white; }
+
+body.dark-theme .comment-input { background: #2c2c2c; color: #e0e0e0; border-color: #555; }
+body.dark-theme .comment-item { background: #2c2c2c; color: #e0e0e0; }
+body.dark-theme .hashtag { color: #ff6a00; font-weight: 600; }
+body.dark-theme .flash-messages .alert { background: #388e3c; color: white; }
+body.dark-theme .search-form input { background: #2c2c2c; color: #e0e0e0; border-color: #555; }
+
+</style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav style="display:flex; align-items:center; padding:1rem; flex-wrap: wrap; gap:1rem; justify-content: space-between;">
-        <!-- Left -->
-        <div style="display:flex; gap:0.5rem; flex:1;">
-            <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint == 'main.index' %}active{% endif %}">
-                <i class="fas fa-house"></i>
-            </a>
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint == 'main.profile' %}active{% endif %}">
-                <i class="fas fa-user"></i>
-            </a>
-            {% endif %}
-        </div>
+<!-- NAVBAR -->
+<nav>
+    <div style="display:flex; gap:0.5rem; flex:1;">
+        <a href="{{ url_for('main.index') }}" class="navbar-button {% if request.endpoint=='main.index' %}active{% endif %}">
+            <i class="fas fa-house"></i>
+        </a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.profile') }}" class="navbar-button {% if request.endpoint=='main.profile' %}active{% endif %}">
+            <i class="fas fa-user"></i>
+        </a>
+        {% endif %}
+    </div>
 
-        <!-- Center search -->
-        <div style="flex:2; display:flex; justify-content:center;">
-            <form action="{{ url_for('main.search_user') }}" method="get" class="search-form" style="width:100%; max-width:400px; display:flex; gap:0.5rem;">
-                <input type="text" name="q" placeholder="Search users...">
-                <button type="submit" class="navbar-button">
-                    <i class="fas fa-magnifying-glass"></i></a>
-                </button>
-            </form>
-        </div>
+    <form action="{{ url_for('main.search') }}" method="get" class="search-form">
+        <input type="text" name="q" placeholder="Search users or #hashtags" required>
+        <button class="navbar-button"><i class="fas fa-search"></i></button>
+    </form>
 
-        <!-- Right -->
-        <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-sign-out-alt"></i></a>
-            {% else %}
-            <a href="{{ url_for('auth.login') }}" class="navbar-button {% if request.endpoint == 'auth.login' %}active{% endif %}"><i class="fas fa-sign-in-alt"></i></a>
-            <a href="{{ url_for('auth.signup') }}" class="navbar-button {% if request.endpoint == 'auth.signup' %}active{% endif %}"><i class="fas fa-user-plus"></i></a>
-            {% endif %}
-        </div>
-    </nav>
+    <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
+        <button id="theme-toggle" class="navbar-button"><i class="fas fa-moon"></i> Dark</button>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('auth.logout') }}" class="navbar-button"><i class="fas fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="navbar-button"><i class="fas fa-right-to-bracket"></i></a>
+        <a href="{{ url_for('auth.signup') }}" class="navbar-button"><i class="fas fa-user-plus"></i></a>
+        {% endif %}
+    </div>
+</nav>
 
-    <!-- Main Section -->
-    <section class="hero">
-        <div class="hero-body">
-            <div class="container">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                  <div class="flash-messages">
-                      {% for category, message in messages %}
-                      <div class="alert {% if category == 'error' %}is-danger{% elif category == 'success' %}is-success{% endif %}">
-                          {{ message }}
-                      </div>
-                      {% endfor %}
-                  </div>
-                  {% endif %}
-                {% endwith %}
+<!-- MAIN CONTENT -->
+<section class="hero">
+<div class="hero-body">
+<div class="container">
 
-                {% block content %}{% endblock %}
-            </div>
-        </div>
-    </section>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
 
-    <script>
-        document.querySelectorAll('.flash-messages .alert').forEach(msg => {
-            setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
-        });
-    </script>
+    {% block content %}{% endblock %}
+
+</div>
+</div>
+</section>
+
+<script>
+// === THEME PERSISTENCE ===
+const toggle = document.getElementById('theme-toggle');
+if(localStorage.getItem('theme') === 'dark'){
+    document.body.classList.add('dark-theme');
+    toggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+}
+toggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    if(document.body.classList.contains('dark-theme')){
+        toggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        toggle.innerHTML = '<i class="fas fa-moon"></i> Dark';
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+// Auto fade flash messages
+document.querySelectorAll('.flash-messages .alert').forEach(msg => {
+    setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
+});
+</script>
+
 </body>
 </html>

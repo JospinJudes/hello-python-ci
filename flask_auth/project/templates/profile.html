@@ -1,98 +1,91 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <!-- Carte profil -->
 <div class="profile-card">
 
-    <!-- Ligne nom + boutons -->
     <div class="profile-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
         <h1 style="font-size:2.5rem; font-weight:800; margin:0;">@{{ user.name | replace(' ', '') }}</h1>
 
-        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:flex-end;">
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
             {% if is_own_profile %}
-                <button id="edit-bio-btn" class="profile-btn">Edit Bio</button>
-                <a href="{{ url_for('main.tweet') }}" class="profile-btn">Post</a>
-                <a href="{{ url_for('auth.password_page') }}" class="profile-btn">Change Password</a>
+
+                <!-- EDIT BIO -->
+                <a href="#" id="edit-bio-btn" class="profile-btn icon-gap">
+                    <i class="fas fa-pen"></i>
+                    Edit Bio
+                </a>
+
+                <!-- POST -->
+                <a href="{{ url_for('main.tweet') }}" class="profile-btn icon-gap">
+                    <i class="fas fa-paper-plane"></i>
+                    Post
+                </a>
+
+                <!-- CHANGE PASSWORD -->
+                <a href="{{ url_for('auth.password_page') }}" class="profile-btn icon-gap">
+                    <i class="fas fa-lock"></i>
+                    Change Password
+                </a>
+
             {% else %}
                 <form action="{{ url_for('main.unfollow', user_id=user.id) if current_user.is_following(user) else url_for('main.follow', user_id=user.id) }}" method="POST" style="margin:0;">
-                    {% if current_user.is_following(user) %}
-                        <button type="submit" class="profile-btn unfollow-btn">Unfollow</button>
-                    {% else %}
-                        <button type="submit" class="profile-btn follow-btn">Follow</button>
-                    {% endif %}
+                    <button type="submit" class="profile-btn icon-gap {% if current_user.is_following(user) %}unfollow-btn{% else %}follow-btn{% endif %}">
+                        {% if current_user.is_following(user) %}
+                            <i class="fas fa-user-minus"></i>
+                            Unfollow
+                        {% else %}
+                            <i class="fas fa-user-plus"></i>
+                            Follow
+                        {% endif %}
+                    </button>
                 </form>
             {% endif %}
         </div>
     </div>
 
     <!-- Bio -->
-    <p id="bio-text" class="bio-text" style="margin-top:1rem;">{{ user.bio or "This user hasn’t written a bio yet." }}</p>
+    <p id="bio-text" class="bio-text" style="margin-top:1rem;">
+        {{ user.bio or "This user hasn’t written a bio yet." }}
+    </p>
 
     {% if is_own_profile %}
     <form id="edit-bio-form" action="{{ url_for('main.edit_bio') }}" method="POST" style="display:none; margin-top:1rem;">
-        <textarea name="bio" rows="4" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:1px solid #ccc; font-size:1rem; resize:none;">{{ user.bio or '' }}</textarea>
+        <textarea name="bio" rows="4" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:1px solid #ccc; font-size:1rem; resize:none;">
+            {{ user.bio or '' }}
+        </textarea>
+
         <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-            <button type="submit" class="profile-btn save-btn">Save</button>
-            <button type="button" id="cancel-bio-btn" class="profile-btn cancel-btn">Cancel</button>
+            <button type="submit" class="profile-btn save-btn icon-gap">
+                <i class="fas fa-check"></i>
+                Save
+            </button>
+
+            <button type="button" id="cancel-bio-btn" class="profile-btn cancel-btn icon-gap">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
         </div>
     </form>
     {% endif %}
 
     <!-- Stats -->
     <div style="display:flex; gap:2rem; margin-top:1rem; font-weight:600; font-size:1rem;">
-        <div>{{ following_count }} Following</div>
-        <div>{{ followers_count }} Followers</div>
+        <div class="icon-gap"><i class="fas fa-user-friends"></i>{{ following_count }} Following</div>
+        <div class="icon-gap"><i class="fas fa-users"></i>{{ followers_count }} Followers</div>
     </div>
 
 </div>
 
 <!-- Liste des tweets -->
-<div class="tweets-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+<div class="tweets-container">
     {% if tweets %}
         {% for tweet in tweets %}
-        <div class="tweet-card">
-            <div class="tweet-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                    <strong>@{{ tweet.user.name }}</strong>
-                    <small style="color:#888; margin-left:0.5rem;">{{ tweet.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
-                </div>
-                {% if is_own_profile and tweet.user_id == current_user.id %}
-                    <form action="{{ url_for('main.delete_tweet', tweet_id=tweet.id) }}" method="POST" style="margin:0;">
-                        <button type="submit" class="delete-btn">Delete</button>
-                    </form>
-                {% endif %}
-            </div>
-
-            <p class="tweet-content" style="margin-top:0.5rem;">{{ tweet.content }}</p>
-
-            <!-- Like -->
-            {% set liked = tweet.id in current_user.liked_tweet_ids %}
-            <form action="{{ url_for('main.like_tweet', tweet_id=tweet.id) }}" method="POST" style="display:inline;">
-                <button type="submit" class="like-btn {% if liked %}liked{% endif %}">❤️ ({{ tweet.likes_count }})</button>
-            </form>
-
-            <!-- Comment -->
-            <div style="margin-top:0.5rem;">
-                <form action="{{ url_for('main.comment_tweet', tweet_id=tweet.id) }}" method="POST" style="display:flex; gap:0.5rem;">
-                    <input type="text" name="comment_content" placeholder="Add a comment..." class="comment-input">
-                    <button type="submit" class="comment-btn">Comment</button>
-                </form>
-
-                {% if tweet.comments %}
-                <ul style="margin-top:0.5rem; padding-left:1rem; list-style:none;">
-                    {% for comment in tweet.comments %}
-                    <li style="margin-bottom:0.25rem;">
-                        <strong>{{ comment.user.name }}</strong>: {{ comment.content }}
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-        </div>
+            {% set show_delete = is_own_profile %}
+            {% include "_tweet_card.html" %}
         {% endfor %}
     {% else %}
-        <p style="margin-top:1rem; font-style:italic; color:gray;">No tweets yet.</p>
+        <p style="text-align:center; color:gray; font-style:italic;">No tweets yet.</p>
     {% endif %}
 </div>
 
@@ -104,7 +97,8 @@ const form = document.getElementById('edit-bio-form');
 const bioText = document.getElementById('bio-text');
 
 if(editBtn && cancelBtn && form && bioText){
-    editBtn.addEventListener('click', ()=>{ 
+    editBtn.addEventListener('click', (e)=>{ 
+        e.preventDefault();
         form.style.display='block'; 
         editBtn.style.display='none'; 
         bioText.style.display='none'; 
