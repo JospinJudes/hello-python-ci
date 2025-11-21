@@ -3,6 +3,7 @@
 from flask_login import UserMixin
 from . import db
 from datetime import datetime
+import json
 
 # Table d'association pour le système de follow
 followers = db.Table(
@@ -138,3 +139,41 @@ class Hashtag(db.Model):
         back_populates='hashtags',
         lazy='dynamic'
     )
+
+
+# Notification model
+class Notification(db.Model):
+    __tablename__ = "notifications"
+
+    id = db.Column(db.Integer, primary_key=True)
+    recipient_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    actor_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    type = db.Column(db.String(30), nullable=False)  # 'follow', 'like', 'comment'
+    payload = db.Column(db.Text, nullable=True)  # JSON string
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # relationships so you can use n.actor and n.recipient in Python code
+    actor = db.relationship('User', foreign_keys=[actor_id], backref=db.backref('actor_notifications', lazy='dynamic'))
+    recipient = db.relationship('User', foreign_keys=[recipient_id], backref=db.backref('received_notifications', lazy='dynamic'))
+
+    def set_payload(self, data):
+        self.payload = json.dumps(data)
+
+    def get_payload(self):
+        return json.loads(self.payload) if self.payload else {}
+
+
+def create_notification(recipient_id, actor_id, notif_type, payload=None):
+    """Create & persist a notification."""
+    n = Notification(
+        recipient_id=recipient_id,
+        actor_id=actor_id,
+        type=notif_type
+    )
+    if payload:
+        n.set_payload(payload)
+    db.session.add(n)
+    db.session.commit()
+    return n
+# ----------------- END NOTIFICATIONS -----------------

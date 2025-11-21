@@ -2,10 +2,11 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import User, Tweet, followers, Like, Comment, Hashtag
+from .models import User, Tweet, followers, Like, Comment, Notification, create_notification
 from . import db
 from .forms import TweetForm
 from sqlalchemy import func
+from flask import jsonify, request
 
 main = Blueprint('main', __name__)
 
@@ -18,8 +19,7 @@ def index():
 @login_required
 def home():
     sort = request.args.get('sort', 'timeline')
-    following_ids = [u.id for u in current_user.followed]
-    following_ids.append(current_user.id)
+    following_ids = [u.id for u in current_user.followed] + [current_user.id]
 
 
     if sort == 'ranked':
@@ -89,39 +89,19 @@ def user_profile(user_id):
 def tweet():
     form = TweetForm()
     if form.validate_on_submit():
-        import re
         try:
-            # Création du tweet
             new_tweet = Tweet(content=form.content.data, user=current_user)
             db.session.add(new_tweet)
-
-            # Extraction des hashtags
-            tags = set(re.findall(r'#(\w+)', new_tweet.content))
-            for tag in tags:
-                hashtag = Hashtag.query.filter_by(tag=tag).first()
-                if not hashtag:
-                    hashtag = Hashtag(tag=tag)
-                    db.session.add(hashtag)
-                # Ajouter la relation many-to-many
-                new_tweet.hashtags.append(hashtag)
-
-            # Commit final une seule fois
             db.session.commit()
-
             flash('Tweet posted!')
             return redirect(url_for('main.profile'))
-
-        except Exception as e:
+        except Exception:
             db.session.rollback()
-            flash(f"An error occurred: {e}")  # Affiche l’erreur réelle pour debug
-
+            flash("An error occurred during publication. Please try again.")
     else:
         if form.content.errors:
             flash("Your tweet must be between 1 and 280 characters long.")
-
     return render_template('tweet.html', form=form)
-
-
 
 
 @main.route('/delete_tweet/<int:tweet_id>', methods=['POST'])
@@ -162,6 +142,7 @@ def follow(user_id):
         return redirect(url_for('main.user_profile', user_id=user.id))
     current_user.follow(user)
     db.session.commit()
+    create_notification(recipient_id=user.id, actor_id=current_user.id, notif_type="follow")
     flash(f"You are now following {user.name}!", category="follow")
     return redirect(url_for('main.user_profile', user_id=user.id))
 
@@ -178,30 +159,13 @@ def unfollow(user_id):
     return redirect(url_for('main.user_profile', user_id=user.id))
 
 # -------------------- SEARCH --------------------
-from flask import request
-
-@main.route('/search', methods=['GET'])
-@login_required
-def search():
-    query = request.args.get('q', '').strip()
+@main.route("/search")
+def search_user():
+    query = request.args.get("q", "").strip()
     users = []
-    tweets = []
-
     if query:
-        if query.startswith('#'):
-            # Recherche par hashtag
-            tag_text = query[1:]  # retirer le #
-            hashtag = Hashtag.query.filter_by(tag=tag_text).first()
-            if hashtag:
-                tweets = hashtag.tweets.order_by(Tweet.timestamp.desc()).all()
-            return render_template('hashtag.html', tag=tag_text, tweets=tweets)
-        else:
-            # Recherche par utilisateur
-            users = User.query.filter(User.name.ilike(f"%{query}%")).all()
-    
-    return render_template('search_results.html', query=query, users=users, tweets=tweets)
-
-
+        users = User.query.filter(User.name.ilike(f"%{query}%")).all()
+    return render_template("search_results.html", users=users, query=query)
 
 # -------------------- LIKE --------------------
 @main.route('/like/<int:tweet_id>', methods=['POST'])
@@ -216,6 +180,15 @@ def like_tweet(tweet_id):
         new_like = Like(user_id=current_user.id, tweet_id=tweet.id)
         db.session.add(new_like)
     db.session.commit()
+    if not current_user.has_liked(tweet):  # on some logic frameworks this may be unnecessary; safe to always create here on add
+        pass  # placeholder - kept for readability
+
+    create_notification(
+        recipient_id=tweet.user_id,
+        actor_id=current_user.id,
+        notif_type="like",
+        payload={"tweet_id": tweet.id}
+    )
     return redirect(request.referrer or url_for('main.profile'))
 
 # -------------------- COMMENT --------------------
@@ -228,19 +201,63 @@ def comment_tweet(tweet_id):
         new_comment = Comment(user_id=current_user.id, tweet_id=tweet.id, content=content)
         db.session.add(new_comment)
         db.session.commit()
+        create_notification(
+            recipient_id=tweet.user_id,
+            actor_id=current_user.id,
+            notif_type="comment",
+            payload={"tweet_id": tweet.id, "comment": new_comment.content}
+        )
         flash("Comment added!")
     else:
         flash("Comment cannot be empty.")
     return redirect(request.referrer or url_for('main.profile'))
 
+# -------------------- NOTIFICATIONS --------------------
 
-# -------------------- gestion de #  --------------------
+@main.route("/notifications")
+@login_required
+def notifications():
+    notifs = Notification.query.filter_by(recipient_id=current_user.id) \
+        .order_by(Notification.created_at.desc()) \
+        .all()
 
-@main.route('/hashtag/<string:tag>')
-def hashtag(tag):
-    hashtag = Hashtag.query.filter_by(tag=tag).first()
-    if not hashtag:
-        tweets = []
-    else:
-        tweets = hashtag.tweets.order_by(Tweet.timestamp.desc()).all()
-    return render_template('hashtag.html', tag=tag, tweets=tweets)
+    # passe à Jinja une liste de dicts simples
+    formatted = [{
+        "id": n.id,
+        "type": n.type,
+        "actor": n.actor.name if n.actor else "",
+        "payload": n.get_payload() if hasattr(n, 'get_payload') else {},
+        "is_read": n.is_read,
+        "created_at": n.created_at.strftime("%Y-%m-%d %H:%M")
+    } for n in notifs]
+
+
+    return render_template("notifications.html", notifications=formatted)
+
+
+@main.route('/notifications/count')
+@login_required
+def notifications_count():
+    # retourne le nombre de notifications non lues pour l'utilisateur courant
+    unread = Notification.query.filter_by(recipient_id=current_user.id, is_read=False).count()
+    return jsonify({"unread": unread})
+
+@main.route('/notifications/mark_all_read', methods=['POST'])
+@login_required
+def mark_all_notifications_read():
+    # marque toutes les notifications non lues de l'utilisateur comme lues
+    Notification.query.filter_by(recipient_id=current_user.id, is_read=False).update({'is_read': True})
+    db.session.commit()
+    return jsonify({"status":"ok"})
+
+
+
+@main.route('/notifications/<int:notif_id>/read', methods=['POST'])
+@login_required
+def read_notification(notif_id):
+    n = Notification.query.get_or_404(notif_id)
+    if n.recipient_id != current_user.id:
+        return jsonify({"error": "forbidden"}), 403
+    n.is_read = True
+    db.session.commit()
+    return jsonify({"status": "ok"})

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+<h1 class="title" style="text-align:center; margin-bottom:1.5rem;">
+    <span class="gradient-text">Notifications</span>
+</h1>
+
+<div class="container" style="max-width:600px; margin:auto;">
+
+    {% if notifications|length == 0 %}
+        <div class="notification-card" 
+             style="padding:1.2rem; background:white; border-radius:12px;
+                    box-shadow:0 4px 10px rgba(0,0,0,0.07); text-align:center;">
+            <p style="color:#777;">Aucune notification pour le moment.</p>
+        </div>
+    {% endif %}
+
+    {% for n in notifications %}
+    <div class="notification-card"
+         style="background:#fff; padding:1rem; border-radius:12px; margin-bottom:1rem;
+                box-shadow:0 4px 10px rgba(0,0,0,0.07);">
+
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+
+            {% if n.type == "follow" %}
+            <i class="fas fa-user-plus" style="color:#ff416c; font-size:1.3rem;"></i>
+            {% elif n.type == "like" %}
+            <i class="fas fa-heart" style="color:#e0245e; font-size:1.3rem;"></i>
+            {% elif n.type == "comment" %}
+            <i class="fas fa-comment" style="color:#ff6a00; font-size:1.3rem;"></i>
+            {% endif %}
+
+            <div>
+                {% if n.type == "follow" %}
+                    <strong>{{ n.actor }}</strong> vous suit maintenant.
+                {% elif n.type == "like" %}
+                    <strong>{{ n.actor }}</strong> a aimé votre post.
+                {% elif n.type == "comment" %}
+                    <strong>{{ n.actor }}</strong> a commenté :
+                    <em>"{{ n.payload.comment }}"</em>
+                {% endif %}
+
+                <div style="font-size:0.8rem; color:#777;">
+                    {{ n.created_at }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Demande au serveur de marquer toutes les notifications comme lues
+        await fetch('{{ url_for("main.mark_all_notifications_read") }}', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json'}
+        });
+    } catch (err) {
+        console.error('mark all read failed', err);
+    }
+
+    // Cacher immédiatement le badge (s'il est présent dans la page parent/base)
+    const badge = parent?.document?.getElementById ? parent.document.getElementById('notif-count') : document.getElementById('notif-count');
+    if (badge) {
+        badge.style.display = 'none';
+    }
+
+    // Tenter d'appeler fetchCount (si elle est définie globalement dans base.html) pour rafraîchir le badge
+    try {
+        if (typeof fetchCount === 'function') {
+            setTimeout(fetchCount, 500);
+        }
+    } catch(e){
+        console.error('refresh fetchCount failed', e);
+    }
+});
+</script>
+
+
+
+{% endblock %}
