@@ -14,7 +14,8 @@
         <div class="notification-card" 
              style="padding:1.2rem; background:white; border-radius:12px;
                     box-shadow:0 4px 10px rgba(0,0,0,0.07); text-align:center;">
-            <p style="color:#777;">Aucune notification pour le moment.</p>
+            <p style="color:#777;">No notifications yet.</p>
+
         </div>
     {% endif %}
 
@@ -32,14 +33,16 @@
             {% elif n.type == "comment" %}
             <i class="fas fa-comment" style="color:#ff6a00; font-size:1.3rem;"></i>
             {% endif %}
+            
 
             <div>
+
                 {% if n.type == "follow" %}
-                    <strong>{{ n.actor }}</strong> vous suit maintenant.
+                    <strong>{{ n.actor }}</strong> is now following you.
                 {% elif n.type == "like" %}
-                    <strong>{{ n.actor }}</strong> a aimé votre post.
+                    <strong>{{ n.actor }}</strong> liked your post.
                 {% elif n.type == "comment" %}
-                    <strong>{{ n.actor }}</strong> a commenté :
+                    <strong>{{ n.actor }}</strong> commented:
                     <em>"{{ n.payload.comment }}"</em>
                 {% endif %}
 
