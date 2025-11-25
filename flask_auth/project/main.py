@@ -7,6 +7,8 @@ from . import db
 from .forms import TweetForm
 from sqlalchemy import func
 from flask import jsonify, request
+from .models import Hashtag
+
 
 main = Blueprint('main', __name__)
 
@@ -89,9 +91,20 @@ def user_profile(user_id):
 def tweet():
     form = TweetForm()
     if form.validate_on_submit():
+        import re
         try:
             new_tweet = Tweet(content=form.content.data, user=current_user)
             db.session.add(new_tweet)
+
+             # Extraction des hashtags
+            tags = set(re.findall(r'#(\w+)', new_tweet.content))
+            for tag in tags:
+                hashtag = Hashtag.query.filter_by(tag=tag).first()
+                if not hashtag:
+                    hashtag = Hashtag(tag=tag)
+                    db.session.add(hashtag)
+                # Ajouter la relation many-to-many
+                new_tweet.hashtags.append(hashtag)
             db.session.commit()
             return redirect(url_for('main.profile'))
         except Exception:
@@ -158,13 +171,28 @@ def unfollow(user_id):
     return redirect(url_for('main.user_profile', user_id=user.id))
 
 # -------------------- SEARCH --------------------
-@main.route("/search")
-def search_user():
-    query = request.args.get("q", "").strip()
+
+@main.route('/search', methods=['GET'])
+@login_required
+def search():
+    query = request.args.get('q', '').strip()
     users = []
+    tweets = []
+
     if query:
-        users = User.query.filter(User.name.ilike(f"%{query}%")).all()
-    return render_template("search_results.html", users=users, query=query)
+        if query.startswith('#'):
+            # Recherche par hashtag
+            tag_text = query[1:]  # retirer le #
+            hashtag = Hashtag.query.filter_by(tag=tag_text).first()
+            if hashtag:
+                tweets = hashtag.tweets.order_by(Tweet.timestamp.desc()).all()
+            return render_template('hashtag.html', tag=tag_text, tweets=tweets)
+        else:
+            # Recherche par utilisateur
+            users = User.query.filter(User.name.ilike(f"%{query}%")).all()
+    
+    return render_template('search_results.html', query=query, users=users, tweets=tweets)
+
 
 # -------------------- LIKE --------------------
 @main.route('/like/<int:tweet_id>', methods=['POST'])
@@ -260,3 +288,14 @@ def read_notification(notif_id):
     n.is_read = True
     db.session.commit()
     return jsonify({"status": "ok"})
+
+
+
+
+# -------------------- gestion de #  --------------------
+
+@main.route('/hashtag/<string:tag>')
+def hashtag(tag):
+    hashtag = Hashtag.query.filter_by(tag=tag).first()
+    tweets = hashtag.tweets.order_by(Tweet.timestamp.desc()).all() if hashtag else []
+    return render_template('hashtag.html', tag=tag, tweets=tweets)

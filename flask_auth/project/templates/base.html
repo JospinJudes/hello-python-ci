@@ -290,7 +290,7 @@ body.dark-theme .search-form input { background: #2c2c2c; color: #e0e0e0; border
         {% endif %}
     </div>
 
-    <form action="{{ url_for('main.search_user') }}" method="get" class="search-form">
+    <form action="{{ url_for('main.search') }}" method="get" class="search-form">
         <input type="text" name="q" placeholder="Search users or #hashtags" required>
         <button class="navbar-button"><i class="fas fa-search"></i></button>
     </form>

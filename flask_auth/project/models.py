@@ -127,7 +127,6 @@ class Comment(db.Model):
 
 
 
-
 class Hashtag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tag = db.Column(db.String(100), unique=True, nullable=False)
