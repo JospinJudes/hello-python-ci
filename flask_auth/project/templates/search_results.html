@@ -4,6 +4,56 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="gradient-text" style="font-size:1.8rem;">Results for "{{ query }}"</h2>
+
+     <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            {% if category == 'success' %}
+                <!-- Message de succès vert -->
+                <div class="notification" style="
+                    border-radius: 12px;
+                    padding: 0.8rem 1rem;
+                    margin-bottom: 1.5rem;
+                    font-weight: 600;
+                    text-align: center;
+                    background: rgba(56, 161, 105, 0.85);
+                    color: white;
+                ">
+                    {{ message }}
+                </div>
+            {% else %}
+                <!-- Messages d'erreur -->
+                <div class="notification" style="
+                    border-radius: 12px; 
+                    padding:0.8rem 1rem;
+                    margin-bottom:1.5rem;
+                    font-weight:600;
+                    text-align:center;
+                    background: rgba(255,37,37,0.85); 
+                    color:white;
+                ">
+                    {{ message }}
+                </div>
+            {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+         <!-- Script pour effacer automatiquement les messages de succès -->
+        <script>
+        document.querySelectorAll('.notification').forEach(msg => {
+            // On ne supprime que les messages verts (success)
+            if (msg.style.background.includes('56, 161, 105')) {
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                    setTimeout(() => msg.remove(), 500);
+                }, 3000); // disparaît après 3s
+            }
+        });
+        </script>
+
+
     <hr>
 
     {% if users %}

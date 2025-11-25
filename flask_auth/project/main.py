@@ -93,14 +93,13 @@ def tweet():
             new_tweet = Tweet(content=form.content.data, user=current_user)
             db.session.add(new_tweet)
             db.session.commit()
-            flash('Tweet posted!')
             return redirect(url_for('main.profile'))
         except Exception:
             db.session.rollback()
-            flash("An error occurred during publication. Please try again.")
+            flash("An error occurred during publication. Please try again.", category="error")
     else:
         if form.content.errors:
-            flash("Your tweet must be between 1 and 280 characters long.")
+            flash("Your tweet must be between 1 and 280 characters long.", category="error")
     return render_template('tweet.html', form=form)
 
 
@@ -109,14 +108,14 @@ def tweet():
 def delete_tweet(tweet_id):
     tweet = Tweet.query.get_or_404(tweet_id)
     if tweet.user_id != current_user.id:
-        flash("You cannot delete this tweet.")
+        flash("You cannot delete this tweet.", category="error")
         return redirect(url_for('main.profile'))
     try:
         db.session.delete(tweet)
         db.session.commit()
     except Exception:
         db.session.rollback()
-        flash("An error occurred during deletion.")
+        flash("An error occurred during deletion.", category="error")
     return redirect(url_for('main.profile'))
 
 # -------------------- EDIT BIO --------------------
@@ -125,11 +124,11 @@ def delete_tweet(tweet_id):
 def edit_bio():
     new_bio = request.form.get('bio', '').strip()
     if len(new_bio) > 300:
-        flash("Bio is too long (max 300 characters)", category='bio')
+        flash("Bio is too long (max 300 characters)", category='error')
     else:
         current_user.bio = new_bio
         db.session.commit()
-        flash("Your bio has been updated!", category="bio")
+        flash("Your bio has been updated!", category="success")
     return redirect(url_for('main.profile'))
 
 # -------------------- FOLLOW / UNFOLLOW --------------------
@@ -138,12 +137,12 @@ def edit_bio():
 def follow(user_id):
     user = User.query.get_or_404(user_id)
     if user == current_user:
-        flash("You cannot follow yourself.", category="follow")
+        flash("You cannot follow yourself.", category="error")
         return redirect(url_for('main.user_profile', user_id=user.id))
     current_user.follow(user)
     db.session.commit()
     create_notification(recipient_id=user.id, actor_id=current_user.id, notif_type="follow")
-    flash(f"You are now following {user.name}!", category="follow")
+    flash(f"You are now following {user.name}!", category="success")
     return redirect(url_for('main.user_profile', user_id=user.id))
 
 @main.route('/unfollow/<int:user_id>', methods=['POST'])
@@ -151,11 +150,11 @@ def follow(user_id):
 def unfollow(user_id):
     user = User.query.get_or_404(user_id)
     if user == current_user:
-        flash("You cannot unfollow yourself.", category="follow")
+        flash("You cannot unfollow yourself.", category="error")
         return redirect(url_for('main.user_profile', user_id=user.id))
     current_user.unfollow(user)
     db.session.commit()
-    flash(f"You unfollowed {user.name}.", category="follow")
+    flash(f"You unfollowed {user.name}.", category="success")
     return redirect(url_for('main.user_profile', user_id=user.id))
 
 # -------------------- SEARCH --------------------

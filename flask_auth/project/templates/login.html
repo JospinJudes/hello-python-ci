@@ -9,14 +9,53 @@
             Login
         </h2>
 
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages(category_filter=['login']) %}
+         <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="notification login-flash">
-                {{ messages[0] }}
-            </div>
+            {% for category, message in messages %}
+            {% if category == 'success' %}
+                <!-- Message de succès vert -->
+                <div class="notification" style="
+                    border-radius: 12px;
+                    padding: 0.8rem 1rem;
+                    margin-bottom: 1.5rem;
+                    font-weight: 600;
+                    text-align: center;
+                    background: rgba(56, 161, 105, 0.85);
+                    color: white;
+                ">
+                    {{ message }}
+                </div>
+            {% else %}
+                <!-- Messages d'erreur -->
+                <div class="notification" style="
+                    border-radius: 12px; 
+                    padding:0.8rem 1rem;
+                    margin-bottom:1.5rem;
+                    font-weight:600;
+                    text-align:center;
+                    background: rgba(255,37,37,0.85); 
+                    color:white;
+                ">
+                    {{ message }}
+                </div>
+            {% endif %}
+            {% endfor %}
         {% endif %}
         {% endwith %}
+
+         <!-- Script pour effacer automatiquement les messages de succès -->
+        <script>
+        document.querySelectorAll('.notification').forEach(msg => {
+            // On ne supprime que les messages verts (success)
+            if (msg.style.background.includes('56, 161, 105')) {
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                    setTimeout(() => msg.remove(), 500);
+                }, 3000); // disparaît après 3s
+            }
+        });
+        </script>
 
         <form method="POST" action="/login" novalidate class="login-form">
 
@@ -149,18 +188,6 @@
     font-size: 0.95rem;
     color: #333;
     text-align: center;
-}
-
-/* Flash messages */
-.login-flash {
-    border-radius: 12px; 
-    background: rgba(255, 37, 37, 0.85); 
-    color: white; 
-    text-align: center;
-    padding: 0.8rem 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    transition: background 0.3s, color 0.3s;
 }
 
 /* ====== Dark theme adjustments ====== */

@@ -10,17 +10,17 @@ import re
 def password_errors(password: str) -> list[str]:
     errors = []
     if password is None or password == "":
-        errors.append("Le mot de passe est requis.")
+        errors.append("Password required.", category="error")
         return errors
 
     if len(password) < 6:
-        errors.append("Le mot de passe doit contenir au moins 6 caractères.")
+        errors.append("The password must contain at least 6 characters.", category="error")
     if not re.search(r"[A-Z]", password):
-        errors.append("Le mot de passe doit contenir au moins une lettre majuscule.")
+        errors.append("The password must contain at least one capital letter.", category="error")
     if not re.search(r"\d", password):
-        errors.append("Le mot de passe doit contenir au moins un chiffre.")
+        errors.append("The password must contain at least one number.", category="error")
     if not re.search(r"[!@#$%^&*(),.?\":{}|]", password): 
-        errors.append("Le mot de passe doit contenir au moins un caractère spécial.")
+        errors.append("The password must contain at least one special character.", category="error")
 
     return errors
 auth = Blueprint('auth', __name__)
@@ -37,20 +37,20 @@ def login_post():
 
     # check if required fields are missing
     if not email or not password:
-        flash('Please complete all fields before proceeding.','login')
+        flash('Please complete all fields before proceeding.', category="error")
         return redirect(url_for('auth.login')) # reload the page
 
     user = User.query.filter_by(email=email).first()
     
     # check if user actually exists
     if not user:
-        flash('No account found with this email address.','login')
+        flash('No account found with this email address.', category="error")
         return redirect(url_for('auth.login')) # reload the page
 
     
     # take the user supplied password, hash it, and compare it to the hashed password in database
     if not user or not check_password_hash(user.password, password): 
-        flash('Please check your login details and try again.','login')
+        flash('Please check your login details and try again.', category="error")
         return redirect(url_for('auth.login')) # if user doesn't exist or password is wrong, reload the page
 
     # if the above check passes, then we know the user has the right credentials
@@ -69,14 +69,14 @@ def signup_post():
 
     # Vérification des champs vides
     if not email or not password:
-        flash("Veuillez renseigner une adresse e-mail et un mot de passe.", category="error")
+        flash("Please complete all fields before proceeding.", category="error")
         return redirect(url_for('auth.signup'))
     
     # Vérification de l'existence de l'utilisateur
     user = User.query.filter_by(email=email).first()
     if user:
 
-        flash("Cette adresse e-mail est déjà utilisée.", category="email_exists")
+        flash("This email adress is already used", category="email_exists")
         return redirect(url_for('auth.signup'))
     
     # Validation des critères du mot de passe 
@@ -96,7 +96,7 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
 
-    flash('Compte créé avec succès !','sign up')
+    flash('Accound successfully created !', category="success")
     return redirect(url_for('auth.login'))
 
 @auth.route('/logout')

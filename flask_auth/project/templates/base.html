@@ -234,9 +234,10 @@ body.dark-theme .notif-badge {
 .comment-item { background: #f1f3f6; padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.9rem; color: #333; }
 .hashtag { color: #ff416c; font-weight: 600; }
 
-/* Flash Messages */
-.flash-messages .alert { background: #4caf50; color: white; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; }
-
+/* Flash Messages 
+.flash-messages .is-success { background: #4caf50; color: white; }
+.flash-messages .is-danger  { background: #ff375d; color: white; }*/
+ 
 /* Responsive */
 @media(max-width: 600px) {
     .tweet-actions, .comment-section { flex-direction: column; }
@@ -320,22 +321,13 @@ body.dark-theme .search-form input { background: #2c2c2c; color: #e0e0e0; border
 <div class="hero-body">
 <div class="container">
 
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="alert">{{ message }}</div>
-        {% endfor %}
-      </div>
-      {% endif %}
-    {% endwith %}
 
     {% block content %}{% endblock %}
 
 </div>
 </div>
 </section>
+
 
 <script>
 // === THEME PERSISTENCE ===
@@ -356,9 +348,11 @@ toggle.addEventListener('click', () => {
 });
 
 // Auto fade flash messages
+/*
 document.querySelectorAll('.flash-messages .alert').forEach(msg => {
     setTimeout(() => { msg.style.opacity = 0; setTimeout(() => msg.remove(), 500); }, 3000);
-});
+});*/
+
 </script>
 
 
