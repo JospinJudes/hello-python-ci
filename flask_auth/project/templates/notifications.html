@@ -4,39 +4,34 @@
 
 {% block content %}
 
-<h1 class="title" style="text-align:center; margin-bottom:1.5rem;">
-    <span class="gradient-text">Notifications</span>
+<h1 class="title gradient-text has-text-centered mb-5">
+    Notifications
 </h1>
 
-<div class="container" style="max-width:600px; margin:auto;">
+<div class="container" style="max-width:700px; margin:0 auto;">
 
     {% if notifications|length == 0 %}
-        <div class="notification-card" 
-             style="padding:1.2rem; background:white; border-radius:12px;
-                    box-shadow:0 4px 10px rgba(0,0,0,0.07); text-align:center;">
+        <div class="tweet-card" style="text-align:center;">
             <p style="color:#777;">No notifications yet.</p>
-
         </div>
     {% endif %}
 
     {% for n in notifications %}
-    <div class="notification-card"
-         style="background:#fff; padding:1rem; border-radius:12px; margin-bottom:1rem;
-                box-shadow:0 4px 10px rgba(0,0,0,0.07);">
+    <div class="tweet-card">
 
-        <div style="display:flex; align-items:center; gap:0.8rem;">
+        <div style="display:flex; align-items:flex-start; gap:0.8rem;">
 
+            <!-- Icone selon type -->
             {% if n.type == "follow" %}
-            <i class="fas fa-user-plus" style="color:#ff416c; font-size:1.3rem;"></i>
+            <i class="fas fa-user-plus" style="color:#ff416c; font-size:1.3rem; flex-shrink:0;"></i>
             {% elif n.type == "like" %}
-            <i class="fas fa-heart" style="color:#e0245e; font-size:1.3rem;"></i>
+            <i class="fas fa-heart" style="color:#e0245e; font-size:1.3rem; flex-shrink:0;"></i>
             {% elif n.type == "comment" %}
-            <i class="fas fa-comment" style="color:#ff6a00; font-size:1.3rem;"></i>
+            <i class="fas fa-comment" style="color:#ff6a00; font-size:1.3rem; flex-shrink:0;"></i>
             {% endif %}
-            
 
-            <div>
-
+            <div style="flex:1;">
+                <!-- Texte notification -->
                 {% if n.type == "follow" %}
                     <strong>{{ n.actor }}</strong> is now following you.
                 {% elif n.type == "like" %}
@@ -46,7 +41,8 @@
                     <em>"{{ n.payload.comment }}"</em>
                 {% endif %}
 
-                <div style="font-size:0.8rem; color:#777;">
+                <!-- Date -->
+                <div class="tweet-date" style="font-size:0.8rem; margin-top:0.2rem;">
                     {{ n.created_at }}
                 </div>
             </div>
@@ -57,10 +53,23 @@
     {% endfor %}
 </div>
 
+<!-- Mode sombre CSS spécifique notifications -->
+<style>
+/* Tweet-card déjà gère sombre, mais on ajuste le texte */
+body.dark-theme .tweet-card strong {
+    color: #fff; /* pseudo ou acteur blanc en sombre */
+}
+body.dark-theme .tweet-card em {
+    color: #e0e0e0; /* texte italique clair */
+}
+body.dark-theme .tweet-card .tweet-date {
+    color: #aaa;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Demande au serveur de marquer toutes les notifications comme lues
         await fetch('{{ url_for("main.mark_all_notifications_read") }}', {
             method: 'POST',
             credentials: 'same-origin',
@@ -70,23 +79,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('mark all read failed', err);
     }
 
-    // Cacher immédiatement le badge (s'il est présent dans la page parent/base)
     const badge = parent?.document?.getElementById ? parent.document.getElementById('notif-count') : document.getElementById('notif-count');
-    if (badge) {
-        badge.style.display = 'none';
-    }
+    if (badge) { badge.style.display = 'none'; }
 
-    // Tenter d'appeler fetchCount (si elle est définie globalement dans base.html) pour rafraîchir le badge
     try {
-        if (typeof fetchCount === 'function') {
-            setTimeout(fetchCount, 500);
-        }
-    } catch(e){
-        console.error('refresh fetchCount failed', e);
-    }
+        if (typeof fetchCount === 'function') { setTimeout(fetchCount, 500); }
+    } catch(e){ console.error('refresh fetchCount failed', e); }
 });
 </script>
-
-
 
 {% endblock %}
